@@ -1,103 +1,147 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="flex flex-col gap-16 px-4 sm:px-8 py-8 max-w-7xl mx-auto">
+      {/* Hero section */}
+      {/* <section className="bg-blue-50 rounded-xl p-10 flex flex-col md:flex-row items-center gap-8">
+        <div className="flex-1">
+          <h1 className="text-4xl font-bold mb-4">Organisez vos pensées, synchronisez sans effort.</h1>
+          <p className="text-gray-700 mb-6">MindKeep Notes est votre solution complète pour une gestion de notes Markdown sans accroc, avec synchronisation en temps réel et organisation intelligente.</p>
+          <button className="bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold">Créer votre première note</button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <div className="flex-1 flex justify-center">
+          <img src="/next.svg" alt="Aperçu application" className="rounded-lg shadow-lg w-full max-w-md" />
+        </div>
+      </section> */}
+
+      {/* Aperçu des notes */}
+      <section>
+        <h2 className="text-2xl font-bold text-center mb-8">Aperçu de vos notes</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="text-3xl font-bold">1 245</span>
+            <span className="text-gray-500 mt-2">Notes totales</span>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="text-3xl font-bold">12</span>
+            <span className="text-gray-500 mt-2">Créées cette semaine</span>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="text-3xl font-bold">3</span>
+            <span className="text-gray-500 mt-2">Rappels à venir</span>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="text-3xl font-bold">2</span>
+            <span className="text-gray-500 mt-2">En attente de synchronisation</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Toutes vos notes */}
+      <section>
+        <h2 className="text-2xl font-bold mb-6">Toutes vos notes</h2>
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <input type="text" placeholder="Rechercher des notes par titre ou contenu..." className="px-3 py-2 rounded-md border bg-gray-50 text-sm flex-1" />
+          <select className="px-3 py-2 rounded-md border bg-gray-50 text-sm">
+            <option>Filtrer par statut</option>
+          </select>
+          <select className="px-3 py-2 rounded-md border bg-gray-50 text-sm">
+            <option>Filtrer par catégorie</option>
+          </select>
+          <select className="px-3 py-2 rounded-md border bg-gray-50 text-sm">
+            <option>Filtrer par tag</option>
+          </select>
+          <button className="bg-blue-900 text-white px-4 py-2 rounded-lg font-semibold">Nouvelle Note</button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Note cards statiques */}
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2">
+            <h3 className="font-bold text-lg">Plan de projet Q3</h3>
+            <span className="text-xs text-gray-500">10 juillet 2024</span>
+            <p className="text-gray-700 text-sm">Résumé des objectifs du projet pour le troisième trimestre, y compris les étapes clés et les responsabilités de l'équipe.</p>
+            <div className="flex gap-2 flex-wrap mt-2">
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">Travail</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">projet</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">planification</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">équipe</span>
+              <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded">Synchronisé</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+              <span>3 pièce(s) jointe(s)</span>
+              <a href="#" className="text-blue-700">Voir PJ</a>
+            </div>
+            <div className="flex justify-end gap-2 mt-2">
+              <button className="text-blue-700 text-xs">Modifier</button>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2">
+            <h3 className="font-bold text-lg">Idées de contenu pour le blog</h3>
+            <span className="text-xs text-gray-500">9 juillet 2024</span>
+            <p className="text-gray-700 text-sm">Brainstorming des sujets potentiels pour les prochains articles de blog. Les idées incluent l'optimisation SEO, les études de cas et la rédaction.</p>
+            <div className="flex gap-2 flex-wrap mt-2">
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">Idées</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">marketing</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">blog</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">rédaction</span>
+              <span className="bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded">En attente</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+              <span>1 pièce(s) jointe(s)</span>
+              <a href="#" className="text-blue-700">Voir PJ</a>
+            </div>
+            <div className="flex justify-end gap-2 mt-2">
+              <button className="text-blue-700 text-xs">Modifier</button>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2">
+            <h3 className="font-bold text-lg">Liste de courses hebdomadaire</h3>
+            <span className="text-xs text-gray-500">8 juillet 2024</span>
+            <p className="text-gray-700 text-sm">Articles à acheter pour la semaine : légumes frais, fruits, produits laitiers, viande et articles ménagers. Ne pas oublier le pain et le beurre.</p>
+            <div className="flex gap-2 flex-wrap mt-2">
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">Personnel</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">maison</span>
+              <span className="bg-gray-100 text-xs px-2 py-1 rounded">courses</span>
+              <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded">Synchronisé</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+              <span>1 pièce(s) jointe(s)</span>
+              <a href="#" className="text-blue-700">Voir PJ</a>
+            </div>
+            <div className="flex justify-end gap-2 mt-2">
+              <button className="text-blue-700 text-xs">Modifier</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Aperçu des pièces jointes récentes */}
+      <section>
+        <h2 className="text-2xl font-bold mb-6">Aperçu des pièces jointes récentes</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="font-semibold">Notes de réunion.pdf</span>
+            <span className="text-xs text-gray-500">Document</span>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="font-semibold">Budget Marketing.xlsx</span>
+            <span className="text-xs text-gray-500">Document</span>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="font-semibold">Image du plan de projet.png</span>
+            <span className="text-xs text-gray-500">Image</span>
+          </div>
+          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
+            <span className="font-semibold">Infographie Statistiques.png</span>
+            <span className="text-xs text-gray-500">Image</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to action final */}
+      <section className="bg-gray-50 rounded-xl p-8 flex flex-col items-center mt-8">
+        <h3 className="text-xl font-bold mb-2">Commencez à organiser vos pensées !</h3>
+        <p className="text-gray-700 mb-4">Créez votre première note, explorez les catégories et les tags, et définissez des rappels.</p>
+        <button className="bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold">Créer une nouvelle note</button>
+      </section>
+    </main>
   );
 }
