@@ -1,8 +1,14 @@
 "use client"
 import React, { useState } from "react";
 import { FiSave, FiTag, FiCalendar, FiPaperclip, FiTrash2, FiPlus, FiEdit } from "react-icons/fi";
+import { useSearchParams } from "next/navigation";
 
 export default function NoteEditor() {
+  
+  const searchParams = useSearchParams();
+  const action = searchParams.get("action") || "new_note";
+
+  //STATES
   const [categories, setCategories] = useState(["Projet", "Développement"]);
   const [tags, setTags] = useState(["API", "Déploiement", "Backend"]);
   const [reminder, setReminder] = useState("2024-07-25T10:00");

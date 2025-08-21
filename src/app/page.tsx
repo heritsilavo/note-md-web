@@ -1,36 +1,9 @@
 import Summary from "@/components/NotesList/Summary";
-import NotesCards, { Note } from "../components/NotesList/NotesCardList";
+import NotesCards from "../components/NotesList/NotesCardList";
 import { FiEdit } from "react-icons/fi";
+import Link from "next/link";
+import { NoteDto } from "@/database/note-dto";
 
-const notes: Note[] = [
-  {
-    title: "Plan de projet Q3",
-    date: "10 juillet 2024",
-    description:
-      "Résumé des objectifs du projet pour le troisième trimestre, y compris les étapes clés et les responsabilités de l'équipe.",
-    tags: ["Travail", "projet", "planification", "équipe"],
-    status: "synchronisé",
-    attachments: 3,
-  },
-  {
-    title: "Idées de contenu pour le blog",
-    date: "9 juillet 2024",
-    description:
-      "Brainstorming des sujets potentiels pour les prochains articles de blog. Les idées incluent l'optimisation SEO, les études de cas et la rédaction.",
-    tags: ["Idées", "marketing", "blog", "rédaction"],
-    status: "en attente",
-    attachments: 1,
-  },
-  {
-    title: "Liste de courses hebdomadaire",
-    date: "8 juillet 2024",
-    description:
-      "Articles à acheter pour la semaine : légumes frais, fruits, produits laitiers, viande et articles ménagers. Ne pas oublier le pain et le beurre.",
-    tags: ["Personnel", "maison", "courses"],
-    status: "synchronisé",
-    attachments: 1,
-  },
-]
 
 export default function Home() {
   return (
@@ -65,15 +38,13 @@ export default function Home() {
           <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
             <option>Filtrer par tag</option>
           </select>
-          <button className="bg-blue-900 cursor-pointer text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 w-full md:w-auto">
+          <Link href="/note-editor?action=new_note" className="bg-blue-900 cursor-pointer text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 w-full md:w-auto">
             <FiEdit className="w-5 h-5" />
             Nouvelle Note
-          </button>
+          </Link>
         </div>
 
-        <NotesCards
-          notes={notes}
-        />
+        <NotesCards/>
       </section>
 
       {/* Aperçu des pièces jointes récentes */}
