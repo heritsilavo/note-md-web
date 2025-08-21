@@ -1,3 +1,37 @@
+import Summary from "@/components/NotesList/Summary";
+import NotesCards, { Note } from "../components/NotesList/NotesCardList";
+import { FiEdit } from "react-icons/fi";
+
+const notes: Note[] = [
+  {
+    title: "Plan de projet Q3",
+    date: "10 juillet 2024",
+    description:
+      "Résumé des objectifs du projet pour le troisième trimestre, y compris les étapes clés et les responsabilités de l'équipe.",
+    tags: ["Travail", "projet", "planification", "équipe"],
+    status: "synchronisé",
+    attachments: 3,
+  },
+  {
+    title: "Idées de contenu pour le blog",
+    date: "9 juillet 2024",
+    description:
+      "Brainstorming des sujets potentiels pour les prochains articles de blog. Les idées incluent l'optimisation SEO, les études de cas et la rédaction.",
+    tags: ["Idées", "marketing", "blog", "rédaction"],
+    status: "en attente",
+    attachments: 1,
+  },
+  {
+    title: "Liste de courses hebdomadaire",
+    date: "8 juillet 2024",
+    description:
+      "Articles à acheter pour la semaine : légumes frais, fruits, produits laitiers, viande et articles ménagers. Ne pas oublier le pain et le beurre.",
+    tags: ["Personnel", "maison", "courses"],
+    status: "synchronisé",
+    attachments: 1,
+  },
+]
+
 export default function Home() {
   return (
     <main className="flex flex-col gap-16 px-4 sm:px-8 py-8 max-w-7xl mx-auto">
@@ -14,103 +48,32 @@ export default function Home() {
       </section> */}
 
       {/* Aperçu des notes */}
-      <section>
-        <h2 className="text-2xl font-bold text-center mb-8">Aperçu de vos notes</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
-            <span className="text-3xl font-bold">1 245</span>
-            <span className="text-gray-500 mt-2">Notes totales</span>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
-            <span className="text-3xl font-bold">12</span>
-            <span className="text-gray-500 mt-2">Créées cette semaine</span>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
-            <span className="text-3xl font-bold">3</span>
-            <span className="text-gray-500 mt-2">Rappels à venir</span>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
-            <span className="text-3xl font-bold">2</span>
-            <span className="text-gray-500 mt-2">En attente de synchronisation</span>
-          </div>
-        </div>
-      </section>
+      <Summary notesCount={0} notesThisWeek={0} pendingSync={0} upcomingReminders={0} />
 
       {/* Toutes vos notes */}
       <section>
         <h2 className="text-2xl font-bold mb-6">Toutes vos notes</h2>
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
-          <input type="text" placeholder="Rechercher des notes par titre ou contenu..." className="px-3 py-2 rounded-md border bg-gray-50 text-sm flex-1" />
-          <select className="px-3 py-2 rounded-md border bg-gray-50 text-sm">
+
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 items-end">
+          <input type="text" placeholder="Rechercher des notes par titre ou contenu..." className="border-[0.2px] border-gray-400 cursor-text outline-0 px-3 py-2 rounded-md bg-gray-50 text-sm w-full" />
+          <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
             <option>Filtrer par statut</option>
           </select>
-          <select className="px-3 py-2 rounded-md border bg-gray-50 text-sm">
+          <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
             <option>Filtrer par catégorie</option>
           </select>
-          <select className="px-3 py-2 rounded-md border bg-gray-50 text-sm">
+          <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
             <option>Filtrer par tag</option>
           </select>
-          <button className="bg-blue-900 text-white px-4 py-2 rounded-lg font-semibold">Nouvelle Note</button>
+          <button className="bg-blue-900 cursor-pointer text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 w-full md:w-auto">
+            <FiEdit className="w-5 h-5" />
+            Nouvelle Note
+          </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Note cards statiques */}
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Plan de projet Q3</h3>
-            <span className="text-xs text-gray-500">10 juillet 2024</span>
-            <p className="text-gray-700 text-sm">Résumé des objectifs du projet pour le troisième trimestre, y compris les étapes clés et les responsabilités de l'équipe.</p>
-            <div className="flex gap-2 flex-wrap mt-2">
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">Travail</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">projet</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">planification</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">équipe</span>
-              <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded">Synchronisé</span>
-            </div>
-            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-              <span>3 pièce(s) jointe(s)</span>
-              <a href="#" className="text-blue-700">Voir PJ</a>
-            </div>
-            <div className="flex justify-end gap-2 mt-2">
-              <button className="text-blue-700 text-xs">Modifier</button>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Idées de contenu pour le blog</h3>
-            <span className="text-xs text-gray-500">9 juillet 2024</span>
-            <p className="text-gray-700 text-sm">Brainstorming des sujets potentiels pour les prochains articles de blog. Les idées incluent l'optimisation SEO, les études de cas et la rédaction.</p>
-            <div className="flex gap-2 flex-wrap mt-2">
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">Idées</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">marketing</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">blog</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">rédaction</span>
-              <span className="bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded">En attente</span>
-            </div>
-            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-              <span>1 pièce(s) jointe(s)</span>
-              <a href="#" className="text-blue-700">Voir PJ</a>
-            </div>
-            <div className="flex justify-end gap-2 mt-2">
-              <button className="text-blue-700 text-xs">Modifier</button>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Liste de courses hebdomadaire</h3>
-            <span className="text-xs text-gray-500">8 juillet 2024</span>
-            <p className="text-gray-700 text-sm">Articles à acheter pour la semaine : légumes frais, fruits, produits laitiers, viande et articles ménagers. Ne pas oublier le pain et le beurre.</p>
-            <div className="flex gap-2 flex-wrap mt-2">
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">Personnel</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">maison</span>
-              <span className="bg-gray-100 text-xs px-2 py-1 rounded">courses</span>
-              <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded">Synchronisé</span>
-            </div>
-            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-              <span>1 pièce(s) jointe(s)</span>
-              <a href="#" className="text-blue-700">Voir PJ</a>
-            </div>
-            <div className="flex justify-end gap-2 mt-2">
-              <button className="text-blue-700 text-xs">Modifier</button>
-            </div>
-          </div>
-        </div>
+
+        <NotesCards
+          notes={notes}
+        />
       </section>
 
       {/* Aperçu des pièces jointes récentes */}
