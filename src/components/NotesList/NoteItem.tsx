@@ -1,12 +1,11 @@
 import { Note } from "./NotesCardList"
 
 type NoteItemProps = {
-    key: number;
     note: Note
 }
 
-export default function NoteItem({note, key}: NoteItemProps) {
-    return <div key={key} className="bg-white rounded-lg p-6 shadow flex flex-col gap-2 cursor-pointer hover:shadow-lg transition-shadow duration-200">
+export default function NoteItem({note}: NoteItemProps) {
+    return <div className="bg-white rounded-lg p-6 shadow flex flex-col gap-2 cursor-pointer hover:shadow-lg transition-shadow duration-200">
           <h3 className="font-bold text-lg">{note.title}</h3>
           <span className="text-xs text-gray-500">{note.date}</span>
           <p className="text-gray-700 text-sm">{note.description}</p>
