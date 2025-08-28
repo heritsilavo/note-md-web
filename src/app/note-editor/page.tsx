@@ -34,6 +34,7 @@ function helloWorld() {
 `;
 
 function NoteEditorPage() {
+
   const router = useRouter();
 
   const searchParams = useSearchParams();
