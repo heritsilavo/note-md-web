@@ -9,77 +9,29 @@ import NoteEditor from "@/components/NoteEditor/NoteEditor";
 import { NoteDto } from "@/database/note-dto";
 import { generateRandomId } from "@/utils/generate-new-id";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-const DEFAULT_NOTE_MARKDOWN = `# Bienvenue dans votre éditeur Markdown !
-
-## Fonctionnalités principales
-- **Édition Markdown** avec aperçu en temps réel
-- **Gestion des catégories et balises**
-- **Ajout de rappels et pièces jointes**
-
-## Exemple de code
-
-\`\`\`js
-function helloWorld() {
-  console.log('Hello, world!');
-}
-\`\`\`
-
-> Ceci est un bloc de citation.
-
-- [ ] Tâche à faire
-- [x] Tâche terminée
-`;
+import useNote from "@/hooks/use-note";
 
 function NoteEditorPage() {
-  const router = useRouter();
 
   const searchParams = useSearchParams();
   const action = searchParams.get("action") || "new_note";
 
   //STATES
-  const [categories, setCategories] = useState<string[]>(["All"]);
-  const [balises, setBalises] = useState<string[]>([]);
-  const [rappel, setRappel] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Note content and metadata
-  const [note, setNote] = useState(DEFAULT_NOTE_MARKDOWN);
-  const [editMode, setEditMode] = useState(true);
-  const [title, setTitle] = useState("Titre du note");
-
-  const handleSave = async () => {
-    setIsLoading(true);
-    const newNote: NoteDto = {
-      nom_note: title,
-      contenu_note: note,
-      categorie: categories,
-      balises: balises,
-      date_heure_note: rappel || "",
-      date_creation: new Date().toISOString(),
-      id: "",
-      status: "created",
-      supabase_id: generateRandomId(),
-      synced: true,
-      typenote: "markdown",
-      user_id: "user-123",
-      visible_pour_date_seulement: false,
-      date_sync: new Date().toISOString(),
-      rappel: rappel || undefined,
-    };
-
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/notes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNote),
-    });
-    
-    setIsLoading(false);
-    console.log("Saving note:", newNote);
-    router.push("/");
-  }
+  const {
+      categories,
+      setCategories,
+      balises,
+      setBalises,
+      rappel,
+      setRappel,
+      isLoading,
+      setIsLoading,
+      handleSave,
+      note,
+      setNote,
+      title,
+      setTitle
+  } = useNote();
 
   const handleClickSave = () => {
     if (action === "new_note") {
