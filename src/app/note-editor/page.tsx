@@ -9,6 +9,8 @@ import NoteEditor from "@/components/NoteEditor/NoteEditor";
 import { NoteDto } from "@/database/note-dto";
 import { generateRandomId } from "@/utils/generate-new-id";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "react-toastify";
+import { fetchApi } from "@/utils/fetch-api";
 
 const DEFAULT_NOTE_MARKDOWN = `# Bienvenue dans votre éditeur Markdown !
 
@@ -55,7 +57,7 @@ function NoteEditorPage() {
       contenu_note: note,
       categorie: categories,
       balises: balises,
-      date_heure_note: rappel || "",
+      date_heure_note: "",
       date_creation: new Date().toISOString(),
       id: "",
       status: "created",
@@ -68,7 +70,7 @@ function NoteEditorPage() {
       rappel: rappel || undefined,
     };
 
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/notes`, {
+    await fetchApi(`/api/notes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,6 +81,7 @@ function NoteEditorPage() {
     setIsLoading(false);
     console.log("Saving note:", newNote);
     router.push("/");
+    toast.success("Note enregistrée avec succès !");
   }
 
   const handleClickSave = () => {
@@ -99,7 +102,7 @@ function NoteEditorPage() {
                 type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                className="text-3xl font-bold text-center w-full max-w-2xl text-blue-900 drop-shadow bg-transparent outline-none border-b-2 border-blue-200 focus:border-blue-500 transition px-2 py-1 duration-200"
+                className="text-3xl font-bold text-center w-full max-w-2xl text-blue-900 bg-transparent outline-none  px-2 py-1"
                 spellCheck={true}
                 placeholder="Titre de la note..."
               />
@@ -115,14 +118,14 @@ function NoteEditorPage() {
           </div>
 
           {/* Catégories, Balises, Rappel */}
-          <div className="rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-8 justify-between border border-gray-100">
+          <div className="rounded-2xl p-8 flex flex-col md:flex-row gap-8 justify-between">
             <CategoriesSelector categories={categories} setCategories={setCategories} />
             <BaliseSelector balises={balises} setBalises={setBalises} />
             <RappelEditor rappel={rappel} setRappel={setRappel} />
           </div>
 
           {/* Editeur Markdown */}
-          <div className="rounded-2xl shadow-lg p-8 border border-gray-100 mt-4 transition-all duration-300">
+          <div className="rounded-2xl p-8 mt-4 transition-all duration-300">
             <NoteEditor contenu={note} setContenu={setNote} defaultPreview={true} />
           </div>
         </>

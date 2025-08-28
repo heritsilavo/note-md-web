@@ -26,7 +26,7 @@ export default function NoteEditor({ contenu, setContenu, defaultPreview = false
     }
 
     return (
-        <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
+        <div className="bg-white rounded-xl p-6 flex flex-col gap-4">
             <div className="flex gap-2 mb-6">
                 <button
                     className={`px-3 py-2 cursor-pointer rounded-lg font-semibold shadow border border-blue-200 ${editorView === 'split' ? 'bg-white text-blue-900' : 'bg-gray-50 text-blue-900'} transition`}

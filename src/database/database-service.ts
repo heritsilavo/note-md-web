@@ -78,3 +78,13 @@ export async function deleteNote(id: string) {
   if (error) throw error;
   return data?.[0] ? new NoteDto(data[0]) : null;
 }
+
+/**
+ * Get a note by its ID.
+ * @param noteId - The ID of the note to retrieve.
+ * @returns Promise resolving to the note or error.
+ */
+export async function getNoteById(noteId: string) {
+  const notes = await getNotes();
+  return notes.find(note => note.supabase_id == noteId);
+}

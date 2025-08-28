@@ -8,7 +8,7 @@ import { MdDashboard } from "react-icons/md";
 export default function Header() {
    const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="w-full bg-white border-b px-4 sm:px-8 py-4 flex items-center justify-between">
+    <header className="w-full bg-white px-4 sm:px-8 py-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <FaRegStickyNote className="text-3xl text-blue-600" />
         <span className="font-bold text-2xl tracking-tight">NoteMD</span>

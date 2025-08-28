@@ -74,7 +74,9 @@ export default function Home() {
       <section className="bg-gray-50 rounded-xl p-8 flex flex-col items-center mt-8">
         <h3 className="text-xl font-bold mb-2">Commencez à organiser vos pensées !</h3>
         <p className="text-gray-700 mb-4">Créez votre première note, explorez les catégories et les tags, et définissez des rappels.</p>
-        <button className="bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold">Créer une nouvelle note</button>
+        <Link href="/note-editor?action=new_note" className="bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold">
+          Créer une nouvelle note
+        </Link>
       </section>
     </main>
   );
