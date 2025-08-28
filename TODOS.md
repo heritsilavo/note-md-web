@@ -4,3 +4,4 @@ TODO; Modification de note
 TODO: suppression note
 TODO: Historiques
 TODO: Liens dans headers
+TODO: add this plugin @toast-ui/editor-plugin-color-syntax
