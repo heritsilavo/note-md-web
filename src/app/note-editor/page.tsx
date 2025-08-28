@@ -7,12 +7,20 @@ import RappelEditor from "@/components/NoteEditor/RappelEditor";
 import NoteEditor from "@/components/NoteEditor/NoteEditor";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useNote from "@/hooks/use-note";
-import { ErrorProvider } from '@heritsilavo/react-error-boundary/next';
+import { useState } from "react";
 
 function NoteEditorPage() {
 
   const searchParams = useSearchParams();
   const action = searchParams.get("action") || "new_note";
+  const noteSupabaseId = searchParams.get("id") || null;
+  const [loadingNote, setLoadingNote] = useState(action == "edit_note")
+
+  if (action === "edit_note" && !noteSupabaseId) {
+    return <div className="max-w-7xl mx-auto py-10 px-2 flex flex-col gap-10">
+      <div className="text-red-600 font-semibold text-center">Erreur : Aucun ID de note fourni pour l'édition.</div>
+    </div>
+  }
 
   const {
     categories,
@@ -35,11 +43,12 @@ function NoteEditorPage() {
     }
   }
 
+
   return (
     <div className="max-w-7xl mx-auto py-10 px-2 flex flex-col gap-10">
-      {isLoading && <LoadingSpinner text="Enregistrement en cours..." />}
+      {(isLoading || loadingNote) && <LoadingSpinner />}
       
-      {!isLoading && (
+      {!(isLoading || loadingNote) && (
         <>
           <div className="flex items-center justify-between mb-8">
             <div className="w-full flex flex-col items-center">

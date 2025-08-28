@@ -1,8 +1,6 @@
 "use client";
 import React, { useRef } from "react";
 import dynamic from "next/dynamic";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 const ToastEditor = dynamic(() => import("@toast-ui/react-editor").then(mod => mod.Editor), { ssr: false });

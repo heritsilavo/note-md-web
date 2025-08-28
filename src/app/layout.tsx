@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "../components/Layout/Header";
 import Footer from "../components/Layout/Footer";
 import { ToastContainer } from 'react-toastify';
+import "@toast-ui/editor/dist/toastui-editor.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
