@@ -10,7 +10,7 @@ export default async function NotesCards() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const response = await fetch(`${baseUrl}/api/notes`);
   const notes = await response.json() as NoteDto[];
-  console.log("NotesCards - notes:", notes);
+  //console.log("NotesCards - notes:", notes);
   
   return (
     <Suspense fallback={<div>Loading notes...</div>}>

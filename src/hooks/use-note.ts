@@ -3,6 +3,7 @@
 import { NoteDto } from "@/database/note-dto";
 import { fetchApi } from "@/utils/fetch-api";
 import { generateRandomId } from "@/utils/generate-new-id";
+import { CustomError } from "@heritsilavo/react-error-boundary/next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -70,10 +71,14 @@ export default function useNote() {
             console.log("Saving note:", newNote);
             router.push("/");
             toast.success("Note enregistrée avec succès !");
-        } catch (error: Error | unknown) {
-            const message = error instanceof Error ? error.message : String(error);
-            console.error("Error saving note:", message);
-            toast.error(`Erreur lors de l'enregistrement de la note : ${message}`);
+        } catch (error) {
+            if (!(error instanceof CustomError)) {
+                const message = error instanceof Error ? error.message : String(error);
+                console.error("Error saving note:", message);
+                toast.error(`Erreur lors de l'enregistrement de la note`);
+            } else {
+                toast.error(`${error.code} : ${error.message}`);
+            }
         } finally {
             setIsLoading(false);
         }

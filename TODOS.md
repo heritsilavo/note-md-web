@@ -1,5 +1,5 @@
-TODO: ajouter un composant de toast pour les notifications de succès ou d'erreur
-TODO: Verifications pour l'ajout denotes
+CHECK: ajouter un composant de toast pour les notifications de succès ou d'erreur
+CHECK: Verifications pour l'ajout de notes
 TODO; Modification de note
 TODO: suppression note
 TODO: Historiques

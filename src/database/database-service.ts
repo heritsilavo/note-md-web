@@ -85,6 +85,19 @@ export async function deleteNote(id: string) {
  * @returns Promise resolving to the note or error.
  */
 export async function getNoteById(noteId: string) {
-  const notes = await getNotes();
-  return notes.find(note => note.supabase_id == noteId);
+  return await supabase.from('notes').select('*').eq('supabase_id', noteId).single();
+}
+
+/**
+ * Get a note by its title.
+ * @param nomNote - The title of the note to retrieve.
+ * @returns Promise resolving to the note or error.
+ */
+export async function getNoteByTitle(nomNote: string) {
+  const { data, error } = await supabase.from('notes').select('*').limit(1).eq('nom_note', nomNote).single();
+  if (error) {
+    console.log("getNoteByTitle error:", error);
+    return null;
+  };
+  return data ? new NoteDto(data) : null;
 }
