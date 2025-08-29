@@ -6,6 +6,7 @@ export class NoteDto {
   nom_note: string;
   contenu_note: string;
   date_creation: string;
+  date_modification: string;
   date_heure_note: string;
   date_sync?: string;
   categorie: string[]; // Tableau de catégories
@@ -33,6 +34,7 @@ export class NoteDto {
     status: NoteStatus;
     user_id: string;
     balises?: string[];
+    date_modification: string;
   }) {
     this.supabase_id = params.supabase_id;
     this.id = params.id;
@@ -49,5 +51,6 @@ export class NoteDto {
     this.status = params.status;
     this.user_id = params.user_id;
     this.balises = params.balises ?? [];
+    this.date_modification = params.date_modification;
   }
 }

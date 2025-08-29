@@ -1,7 +1,7 @@
 "use client";
 import { NoteDto } from "@/database/note-dto";
 import { fetchApi } from "@/utils/fetch-api";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { format } from 'date-fns';
@@ -15,6 +15,8 @@ const ToastViewer = dynamic(() => import("@toast-ui/react-editor").then(mod => m
 });
 
 export default function Page() {
+    const router = useRouter();
+
     const noteId = useParams()["note-id"];
 
     const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +119,7 @@ export default function Page() {
                                 <h1 className="text-2xl font-bold text-gray-900">
                                     {noteData.nom_note}
                                 </h1>
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                                <button onClick={()=>{router.push(`/note-preview/${noteId}`)}} className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
                                     Modifier
                                 </button>
                             </div>

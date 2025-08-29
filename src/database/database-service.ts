@@ -6,7 +6,7 @@ import { NoteDto } from "./note-dto";
  * @returns Promise resolving to an array of notes or error.
  */
 export async function getNotes() {
-  const { data, error } = await supabase.from('notes').select('*');
+  const { data, error } = await supabase.from('notes').select('*').order('date_modification', { ascending: true });
   if (error) throw error;
   return (data ?? []).map((note: any) => new NoteDto({
     supabase_id: note.supabase_id,
@@ -24,6 +24,7 @@ export async function getNotes() {
     status: note.status,
     user_id: note.user_id,
     balises: note.balises ?? [],
+    date_modification: note.date_modification,
   }));
 }
 
@@ -50,6 +51,7 @@ export async function addNote(note: NoteDto) {
       status: note.status,
       user_id: note.user_id,
       balises: note.balises,
+      date_modification: note.date_modification,
     }
   ]).select();
   if (error) throw error;
@@ -63,7 +65,7 @@ export async function addNote(note: NoteDto) {
  * @returns Promise resolving to the updated note or error.
  */
 export async function updateNote(id: string, updates: Partial<NoteDto>) {
-  const { data, error } = await supabase.from('notes').update(updates).eq('id', id).select();
+  const { data, error } = await supabase.from('notes').update(updates).eq('supabase_id', id).select();
   if (error) throw error;
   return data?.[0] ? new NoteDto(data[0]) : null;
 }
@@ -74,7 +76,7 @@ export async function updateNote(id: string, updates: Partial<NoteDto>) {
  * @returns Promise resolving to the deleted note or error.
  */
 export async function deleteNote(id: string) {
-  const { data, error } = await supabase.from('notes').delete().eq('id', id).select();
+  const { data, error } = await supabase.from('notes').delete().eq('supabase_id', id).select();
   if (error) throw error;
   return data?.[0] ? new NoteDto(data[0]) : null;
 }

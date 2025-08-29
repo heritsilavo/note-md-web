@@ -7,20 +7,15 @@ import RappelEditor from "@/components/NoteEditor/RappelEditor";
 import NoteEditor from "@/components/NoteEditor/NoteEditor";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useNote from "@/hooks/use-note";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+export type TypeAction = "new_note" | "edit_note";
 
 function NoteEditorPage() {
 
   const searchParams = useSearchParams();
-  const action = searchParams.get("action") || "new_note";
+  const action: TypeAction = searchParams.get("action") as TypeAction || "new_note";
   const noteSupabaseId = searchParams.get("id") || null;
-  const [loadingNote, setLoadingNote] = useState(action == "edit_note")
-
-  if (action === "edit_note" && !noteSupabaseId) {
-    return <div className="max-w-7xl mx-auto py-10 px-2 flex flex-col gap-10">
-      <div className="text-red-600 font-semibold text-center">Erreur : Aucun ID de note fourni pour l'édition.</div>
-    </div>
-  }
 
   const {
     categories,
@@ -34,21 +29,29 @@ function NoteEditorPage() {
     setNote,
     title,
     setTitle,
-    handleSave
-  } = useNote();
+    handleSave,
+    handleConfirmModif,
+  } = useNote({action, noteSupabaseId});
 
   const handleClickSave = () => {
     if (action === "new_note") {
       handleSave();
+    } else if (action === "edit_note" && noteSupabaseId) {
+      handleConfirmModif();
     }
   }
 
+  if (action === "edit_note" && !noteSupabaseId) {
+    return <div className="max-w-7xl mx-auto py-10 px-2 flex flex-col gap-10">
+      <div className="text-red-600 font-semibold text-center">Erreur : Aucun ID de note fourni pour l'édition.</div>
+    </div>
+  }
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-2 flex flex-col gap-10">
-      {(isLoading || loadingNote) && <LoadingSpinner />}
+      {(isLoading) && <LoadingSpinner />}
       
-      {!(isLoading || loadingNote) && (
+      {!(isLoading) && (
         <>
           <div className="flex items-center justify-between mb-8">
             <div className="w-full flex flex-col items-center">
@@ -62,12 +65,12 @@ function NoteEditorPage() {
               />
             </div>
             <button
-              className="bg-blue-900 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow hover:bg-blue-800 transition duration-200"
-              title="Enregistrer la note"
+              className="cursor-pointer bg-blue-900 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow hover:bg-blue-800 transition duration-200"
+              title={action === "new_note" ? "Creer la note" : "Modifier la note"}
               onClick={handleClickSave}
               disabled={isLoading}
             >
-              <FiSave /> Enregistrer
+              <FiSave /> {action === "new_note" ? "Creer" : "Modifier"}
             </button>
           </div>
 

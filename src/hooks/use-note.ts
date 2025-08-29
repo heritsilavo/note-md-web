@@ -1,43 +1,64 @@
 "use client"
 
+import { DEFAULT_NOTE_MARKDOWN } from "@/constants/default-note-markdown";
 import { NoteDto } from "@/database/note-dto";
 import { fetchApi } from "@/utils/fetch-api";
 import { generateRandomId } from "@/utils/generate-new-id";
 import { CustomError } from "@heritsilavo/react-error-boundary/next";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const DEFAULT_NOTE_MARKDOWN = `# Bienvenue dans votre éditeur Markdown !
-
-## Fonctionnalités principales
-- **Édition Markdown** avec aperçu en temps réel
-- **Gestion des catégories et balises**
-- **Ajout de rappels et pièces jointes**
-
-## Exemple de code
-
-\`\`\`js
-function helloWorld() {
-  console.log('Hello, world!');
+type UseNoteProps = {
+    action: "new_note" | "edit_note";
+    noteSupabaseId: string | null;
 }
-\`\`\`
 
-> Ceci est un bloc de citation.
+export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
 
-- [ ] Tâche à faire
-- [x] Tâche terminée
-`;
-
-export default function useNote() {
     const router = useRouter();
 
     const [categories, setCategories] = useState<string[]>(["All"]);
     const [balises, setBalises] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [rappel, setRappel] = useState<string | null>(null);
     const [note, setNote] = useState(DEFAULT_NOTE_MARKDOWN);
     const [title, setTitle] = useState("Titre du note");
+    const [initialNote, setInitialNote] = useState<NoteDto | null>(null);
+
+    const init = async () => {
+        if (action === "edit_note" && noteSupabaseId) {
+            setIsLoading(true);
+            try {
+                const res = await fetchApi(`/api/notes/${noteSupabaseId}`);
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch note with id ${noteSupabaseId}`);
+                }
+                const {data}: {data:NoteDto} = await res.json();
+                setNote(data.contenu_note);
+                setTitle(data.nom_note);
+                setCategories(data.categorie);
+                setBalises(data.balises);
+                setRappel(data.rappel || null);
+                setInitialNote(data);
+            } catch (error) {
+                console.log(error);
+                if (!(error instanceof CustomError)) {
+                    toast.error(`Erreur lors du chargement de la note`);
+                } else {
+                    toast.error(`${error.code} : ${error.message}`);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        init();
+    }, []);
 
     const handleSave = async () => {
         setIsLoading(true);
@@ -55,8 +76,9 @@ export default function useNote() {
             typenote: "markdown",
             user_id: "user-123",
             visible_pour_date_seulement: false,
-            date_sync: new Date().toISOString(),
+            date_sync: "",
             rappel: rappel || undefined,
+            date_modification: new Date().toISOString()
         };
 
         try {
@@ -84,6 +106,45 @@ export default function useNote() {
         }
     }
 
+    const handleConfirmModif = async () => {
+        if (!initialNote) return;
+        setIsLoading(true);
+        const updatedNote: NoteDto = {
+            ...initialNote,
+            nom_note: title,
+            contenu_note: note,
+            categorie: categories,
+            balises: balises,
+            rappel: rappel || undefined,
+            status: "modified",
+            date_sync: new Date().toISOString(),
+            date_modification: new Date().toISOString()
+        };
+        try {
+            await fetchApi(`/api/notes/${initialNote.supabase_id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedNote),
+            });
+
+            console.log("Updating note:", updatedNote);
+            router.push("/");
+            toast.success("Note modifiée avec succès !");
+        } catch (error) {
+            if (!(error instanceof CustomError)) {
+                const message = error instanceof Error ? error.message : String(error);
+                console.error("Error updating note:", message);
+                toast.error(`Erreur lors de la modification de la note`);
+            } else {
+                toast.error(`${error.code} : ${error.message}`);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return {
         categories,
         setCategories,
@@ -97,6 +158,8 @@ export default function useNote() {
         setNote,
         title,
         setTitle,
-        handleSave
+        handleSave,
+        initialNote,
+        handleConfirmModif
     };
 }

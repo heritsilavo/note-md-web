@@ -4,10 +4,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request, context: { params: { noteId: string } }) {
   try {
     const params = await context.params;
-    console.log("param:", params);
-    
     const note = await getNoteById(params.noteId);
-    console.log("note:", note);
     
     if (!note) {
       return NextResponse.json({ error: 'Note not found' }, { status: 404 });
@@ -21,8 +18,9 @@ export async function GET(request: Request, context: { params: { noteId: string 
 
 export async function PUT(request: Request, context: { params: { noteId: string } }) {
   try {
+    const params = await context.params;
     const body = await request.json();
-    const note = await updateNote(context.params.noteId, body);
+    const note = await updateNote(params.noteId, body);
     return NextResponse.json(note);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
