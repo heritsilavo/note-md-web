@@ -10,7 +10,7 @@ export async function getNotes() {
     .from('notes')
     .select('*')
     .neq('status', 'deleted')
-    .order('date_modification', { ascending: true });
+    .order('date_modification', { ascending: false });
   if (error) throw error;
   return (data ?? []).map((note: any) => new NoteDto({
     supabase_id: note.supabase_id,
