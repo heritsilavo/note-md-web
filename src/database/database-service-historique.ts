@@ -37,3 +37,38 @@ export async function getAllHistoriqueNotes(): Promise<{ data: HistoriqueNoteDTO
         return { data: [], error };
     }
 }
+
+/**
+ * Recupere un historique par son id
+ * @param id id de l'historique a recuperer
+ * @returns l'historique correspondant a l'id
+ */
+export async function getHistoriqueNoteById(id: string): Promise<{ data: HistoriqueNoteDTO | null; error: any }> {
+    try {
+        const { data, error } = await supabase
+            .from('notes_hist')
+            .select('*')
+            .eq('id', id)
+            .single();
+        if (error) {
+            console.log("getHistoriqueNoteById error:", error);
+            return { data: null, error };
+        }
+        if (!data) {
+            return { data: null, error: null };
+        }
+        const historique = new HistoriqueNoteDTO({
+            id: data.id,
+            note_id: data.note_id,
+            nom_note: data.nom_note,
+            avant: data.avant,
+            apres: data.apres,
+            action: data.action,
+            created_at: data.created_at,
+        });
+        return { data: historique, error: null };
+    } catch (error) {
+        console.log("Unexpected error:", error);
+        return { data: null, error };
+    }
+}

@@ -2,8 +2,8 @@ import Summary from "@/components/NotesList/Summary";
 import NotesCards from "../components/NotesList/NotesCardList";
 import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
-import { NoteDto } from "@/database/note-dto";
 
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (

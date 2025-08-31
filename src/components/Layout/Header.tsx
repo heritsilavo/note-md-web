@@ -19,7 +19,7 @@ export default function Header() {
       <nav className="hidden md:flex flex-1 items-center justify-center gap-8">
         <Link href="/" className="font-medium text-gray-700 hover:text-blue-600 flex items-center gap-1"><MdDashboard className="text-lg" /> Tableau de bord</Link>
         <Link href="/" className="font-medium text-gray-700 hover:text-blue-600">Paramètres</Link>
-        <Link href="/" className="font-medium text-gray-700 hover:text-blue-600">Historique</Link>
+        <Link href="/historique" className="font-medium text-gray-700 hover:text-blue-600">Historique</Link>
       </nav>
       <div className="hidden md:flex items-center gap-4">
         <input type="text" placeholder="Rechercher des notes..." className="px-3 py-1.5 rounded-md border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200" />
@@ -37,7 +37,7 @@ export default function Header() {
           <nav className="flex flex-col items-center gap-4 w-full">
             <Link href="/" className="font-medium text-gray-700 hover:text-blue-600 flex items-center gap-1"><MdDashboard className="text-lg" /> Tableau de bord</Link>
             <Link href="/" className="font-medium text-gray-700 hover:text-blue-600">Paramètres</Link>
-            <Link href="/" className="font-medium text-gray-700 hover:text-blue-600">Historique</Link>
+            <Link href="/historique" className="font-medium text-gray-700 hover:text-blue-600">Historique</Link>
           </nav>
           <div className="flex flex-col items-center gap-2 w-full px-4">
             <input type="text" placeholder="Rechercher des notes..." className="px-3 py-1.5 rounded-md border bg-gray-50 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200" />

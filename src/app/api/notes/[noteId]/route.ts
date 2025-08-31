@@ -1,7 +1,10 @@
 import { getNoteById, updateNote, softDeleteNote } from '@/database/database-service-notes';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: Request, context: { params: { noteId: string } }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ noteId: string }> }
+) {
   try {
     const params = await context.params;
     const note = await getNoteById(params.noteId);
@@ -16,7 +19,10 @@ export async function GET(request: Request, context: { params: { noteId: string 
   }
 }
 
-export async function PUT(request: Request, context: { params: { noteId: string } }) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ noteId: string }> }
+) {
   try {
     const params = await context.params;
     const body = await request.json();
@@ -28,7 +34,10 @@ export async function PUT(request: Request, context: { params: { noteId: string 
   }
 }
 
-export async function DELETE(request: Request, context: { params: { noteId: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ noteId: string }> }
+) {
   try {
     const params = await context.params;
     const note = await softDeleteNote(params.noteId);

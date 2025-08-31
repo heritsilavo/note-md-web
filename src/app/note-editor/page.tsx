@@ -7,7 +7,6 @@ import RappelEditor from "@/components/NoteEditor/RappelEditor";
 import NoteEditor from "@/components/NoteEditor/NoteEditor";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useNote from "@/hooks/use-note";
-import { useEffect, useState } from "react";
 
 export type TypeAction = "new_note" | "edit_note";
 
