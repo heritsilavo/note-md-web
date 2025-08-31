@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getNotes, addNote, updateNote, deleteNote, getNoteByTitle } from '../../../database/database-service-notes';
+import { getNotes, addNote, updateNote, softDeleteNote, getNoteByTitle } from '../../../database/database-service-notes';
 import { NoteDto } from '../../../database/note-dto';
 
 export async function GET() {
@@ -27,6 +27,8 @@ export async function POST(request: Request) {
     const note = await addNote(noteDto);
     return NextResponse.json(note);
   } catch (error) {
+    console.log("POST /notes error:", error);
+    
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ error: message }, { status: 500 });
   }
@@ -47,7 +49,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const body = await request.json();
-    const note = await deleteNote(body.id);
+    const note = await softDeleteNote(body.id);
     return NextResponse.json(note);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

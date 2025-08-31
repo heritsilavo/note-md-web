@@ -28,7 +28,7 @@ export function useDeleteNote({ noteId }: UseDeleteNoteProps) {
                 toast.error("Failed to delete the note");
             }
         } catch (error) {
-            console.error("Error deleting note:", error);
+            console.error("Error deleting note:", JSON.stringify(error));
         } finally {
             setLoadingDelete(false);
         }

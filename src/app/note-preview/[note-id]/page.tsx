@@ -135,7 +135,7 @@ export default function Page() {
                                     <h1 className="text-2xl font-bold text-gray-900">
                                         {noteData.nom_note}
                                     </h1>
-                                    <button onClick={() => { router.push(`/note-preview/${noteId}`) }} className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                                    <button onClick={() => { router.push(`/note-editor/?action=edit_note&id=${noteId}`) }} className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
                                         Modifier
                                     </button>
                                 </div>

@@ -6,7 +6,11 @@ import { NoteDto } from "./note-dto";
  * @returns Promise resolving to an array of notes or error.
  */
 export async function getNotes() {
-  const { data, error } = await supabase.from('notes').select('*').order('date_modification', { ascending: true });
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .neq('status', 'deleted')
+    .order('date_modification', { ascending: true });
   if (error) throw error;
   return (data ?? []).map((note: any) => new NoteDto({
     supabase_id: note.supabase_id,
@@ -82,6 +86,17 @@ export async function deleteNote(id: string) {
 }
 
 /**
+ * soft delete a note by ID.
+ * @param id - The ID of the note to delete.
+ * @returns Promise resolving to the deleted note or error.
+ */
+export async function softDeleteNote(id: string) {
+  const { data, error } = await supabase.from('notes').update({ status: 'deleted' }).eq('supabase_id', id).select();
+  if (error) throw error;
+  return data?.[0] ? new NoteDto(data[0]) : null;
+}
+
+/**
  * Get a note by its ID.
  * @param noteId - The ID of the note to retrieve.
  * @returns Promise resolving to the note or error.
@@ -96,7 +111,13 @@ export async function getNoteById(noteId: string) {
  * @returns Promise resolving to the note or error.
  */
 export async function getNoteByTitle(nomNote: string) {
-  const { data, error } = await supabase.from('notes').select('*').limit(1).eq('nom_note', nomNote).single();
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .neq('status', 'deleted')
+    .limit(1)
+    .eq('nom_note', nomNote)
+    .single();
   if (error) {
     console.log("getNoteByTitle error:", error);
     return null;

@@ -8,6 +8,8 @@ export async function fetchApi(input: string | URL | Request, init?: RequestInit
   }
   const response = await fetch(url, init);
   if (!response.ok) {
+    console.log("fetchApi error response:", response);
+    
     const errorText = await response.text();
     const errorJson = {error: errorText};
     try {
