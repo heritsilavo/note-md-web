@@ -147,6 +147,13 @@
     "@tanstack/react-virtual" "^3.13.9"
     use-sync-external-store "^1.5.0"
 
+"@heritsilavo/modal@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@heritsilavo/modal/-/modal-2.0.8.tgz#a862880224f50744cb1c576af96c86bc4b1b27d1"
+  integrity sha512-W5Y3YdlhgsyXZhbcVzQYzBXsEPd9k1tsSJTmJOHNBiPfSHSrzMYnDvn6TlRFcMLkO1zk/Bid7KAlGJ6AXB1NFA==
+  dependencies:
+    gsap "^3.12.7"
+
 "@heritsilavo/react-error-boundary@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@heritsilavo/react-error-boundary/-/react-error-boundary-2.1.3.tgz#e01d0bdc42aa88c29b677bc8725c2da11396c7e8"
@@ -2180,6 +2187,11 @@ graphemer@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/graphemer/-/graphemer-1.4.0.tgz"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
+
+gsap@^3.12.7, gsap@^3.13.0:
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.13.0.tgz#597d4e019a2bb487785387d91296adebf92db9dd"
+  integrity sha512-QL7MJ2WMjm1PHWsoFrAQH/J8wUeqZvMtHO58qdekHpCfhvhSL4gSiz6vJf5EeMP0LOn3ZCprL2ki/gjED8ghVw==
 
 has-bigints@^1.0.2:
   version "1.1.0"

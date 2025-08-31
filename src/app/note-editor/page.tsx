@@ -58,10 +58,11 @@ function NoteEditorPage() {
               <input
                 type="text"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={e => (action=="new_note") && setTitle(e.target.value)}
                 className="text-3xl font-bold text-center w-full max-w-2xl text-blue-900 bg-transparent outline-none  px-2 py-1"
                 spellCheck={true}
                 placeholder="Titre de la note..."
+                disabled={action==="edit_note"}
               />
             </div>
             <button

@@ -1,4 +1,4 @@
-import { getNoteById, updateNote, deleteNote } from '@/database/database-service';
+import { getNoteById, updateNote, deleteNote } from '@/database/database-service-notes';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request, context: { params: { noteId: string } }) {
@@ -30,7 +30,8 @@ export async function PUT(request: Request, context: { params: { noteId: string 
 
 export async function DELETE(request: Request, context: { params: { noteId: string } }) {
   try {
-    const note = await deleteNote(context.params.noteId);
+    const params = await context.params;
+    const note = await deleteNote(params.noteId);
     return NextResponse.json(note);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

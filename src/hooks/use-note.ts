@@ -111,7 +111,6 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
         setIsLoading(true);
         const updatedNote: NoteDto = {
             ...initialNote,
-            nom_note: title,
             contenu_note: note,
             categorie: categories,
             balises: balises,

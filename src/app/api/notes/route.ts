@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getNotes, addNote, updateNote, deleteNote, getNoteByTitle } from '../../../database/database-service';
+import { getNotes, addNote, updateNote, deleteNote, getNoteByTitle } from '../../../database/database-service-notes';
 import { NoteDto } from '../../../database/note-dto';
 
 export async function GET() {
