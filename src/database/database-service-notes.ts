@@ -33,6 +33,20 @@ export async function getNotes() {
 }
 
 /**
+ * Fetch all note names from the database.
+ * @returns Promise resolving to an array of notes or error.
+ */
+export async function getNoteNames() {
+  const { data, error } = await supabase
+    .from('notes')
+    .select('nom_note')
+    .neq('status', 'deleted')
+    .order('date_modification', { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((note: any) => note.nom_note);
+}
+
+/**
  * Add a new note to the database.
  * @param note - The note object to insert.
  * @returns Promise resolving to the inserted note or error.
