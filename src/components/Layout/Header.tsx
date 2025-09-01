@@ -1,18 +1,19 @@
 "use client"
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { FaRegStickyNote } from "react-icons/fa";
 import { FiSettings, FiBell, FiUser, FiMenu, FiX } from "react-icons/fi";
-import { HiOutlineClock } from "react-icons/hi2";
 import { MdDashboard } from "react-icons/md";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  
+  const router = useRouter();
+
   return (
     <header className="w-full bg-white px-4 sm:px-8 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <FaRegStickyNote className="text-3xl text-blue-600" />
+      <div onClick={()=>{router.push('/')}} className="flex items-center gap-3 cursor-pointer">
+        <Image alt="logo" src="/icone-45x50.svg" width={40} height={40}/>
         <span className="font-bold text-2xl tracking-tight">NoteMD</span>
       </div>
       {/* Desktop nav */}
