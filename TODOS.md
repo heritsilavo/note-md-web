@@ -4,8 +4,8 @@ CHECK: Modification de note
 CHECK: suppression note
 CHECK: utiliser le soft delete pour les notes
 CHECK: Historiques (Ajout, modification, suppression)
-TODO: Liens dans headers
-TODO: Liens dans footer
+CHECK: Liens dans headers
+CHECK: Liens dans footer
 TODO: add this plugin @toast-ui/editor-plugin-color-syntax
 TODO: update prod database
 
