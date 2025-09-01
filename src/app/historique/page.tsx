@@ -14,11 +14,11 @@ export default function Page() {
     filters,
     updateFilters,
     actions,
+    router
   } = useHistorique();
 
   const handleRetourTableauBord = () => {
-    // Navigation vers le tableau de bord
-    console.log("Navigation vers le tableau de bord");
+    router.push('/');
   };
 
   if (isLoading) {

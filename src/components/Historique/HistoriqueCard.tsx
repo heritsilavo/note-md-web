@@ -59,7 +59,7 @@ const HistoriqueCard: React.FC<HistoriqueCardProps> = ({
       </div>
 
       {/* CONTENU */}
-      <div className="bg-gray-50 rounded-md p-3">
+      <div className="bg-gray-50 rounded-md p-3 overflow-hidden">
         <p className="text-sm text-gray-700 leading-relaxed">
           {getPreviewText(historique)}
         </p>

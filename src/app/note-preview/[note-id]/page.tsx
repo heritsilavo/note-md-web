@@ -1,7 +1,7 @@
 "use client";
 import { NoteDto } from "@/database/note-dto";
 import { fetchApi } from "@/utils/fetch-api";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { format } from 'date-fns';
@@ -9,19 +9,26 @@ import { fr } from 'date-fns/locale';
 import 'katex/dist/katex.min.css';
 import '@toast-ui/editor/toastui-editor.css'
 import { useDeleteNote } from "@/hooks/use-delete-note";
+import LoadingIcon from "@/components/LoadingSpinner";
 
 const ToastViewer = dynamic(() => import("@toast-ui/react-editor").then(mod => mod.Viewer), {
     ssr: false,
     loading: () => <p className="text-gray-500">Chargement du contenu...</p>
 });
 
+type ActionType = "note_historique" | null;
+
 export default function Page() {
     const router = useRouter();
 
+    const searchParams = useSearchParams();
+    const action:ActionType  = searchParams.get("action") as ActionType || null;
+    const noteHistData: NoteDto | null = JSON.parse(searchParams.get("note_data") || "null");
+ 
     const noteId = useParams()["note-id"] as string | undefined;
 
     const [isLoading, setIsLoading] = useState(false);
-    const [noteData, setNoteData] = useState<NoteDto>();
+    const [noteData, setNoteData] = useState<NoteDto | undefined>(noteHistData || undefined);
     const [error, setError] = useState<string | null>(null);
 
     const {
@@ -54,10 +61,11 @@ export default function Page() {
     }
 
     useEffect(() => {
-        if (noteId) {
+        if ( action != "note_historique" && !!noteId) {
             getNoteData();
         }
-    }, [noteId]);
+    }, [noteId, action]);
+
     const formatDate = (dateString: string) => {
         try {
             const date = new Date(dateString);
@@ -95,13 +103,7 @@ export default function Page() {
     }
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <p className="text-gray-700">Chargement...</p>
-                </div>
-            </div>
-        );
+        return <LoadingIcon />;
     }
 
     if (!noteData) {
@@ -115,13 +117,7 @@ export default function Page() {
     }
 
     if (loadingDelete) {
-            return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <p className="text-gray-700">Suppression de la note...</p>
-                </div>
-            </div>
-        );
+            return <LoadingIcon />;
     }
 
     return (
@@ -135,9 +131,11 @@ export default function Page() {
                                     <h1 className="text-2xl font-bold text-gray-900">
                                         {noteData.nom_note}
                                     </h1>
-                                    <button onClick={() => { router.push(`/note-editor/?action=edit_note&id=${noteId}`) }} className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                                        Modifier
-                                    </button>
+                                    {
+                                        (action != "note_historique") && <button onClick={() => { router.push(`/note-editor/?action=edit_note&id=${noteId}`) }} className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                                            Modifier
+                                        </button>
+                                    }
                                 </div>
 
                                 <div className="px-6 py-6">
@@ -235,7 +233,13 @@ export default function Page() {
                                 </div>
                             </div>
 
-                            <button onClick={openModal} className="cursor-pointer w-full rounded py-1 text-red-500 border-1 border-red-500 hover:bg-red-100 shadow font-bold">Supprimer la note</button>
+                            {
+                                (action != "note_historique")
+                                    && <button onClick={openModal} className="cursor-pointer w-full rounded py-1 text-red-500 border-1 border-red-500 hover:bg-red-100 shadow font-bold">
+                                        Supprimer la note
+                                    </button>
+                            }
+                        
                         </div>
                     </div>
                 </div>

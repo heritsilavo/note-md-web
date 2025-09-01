@@ -12,7 +12,7 @@ const HistoriqueFooter: React.FC<HistoriqueFooterProps> = ({
     <div className="mt-12 text-center">
       <button 
         onClick={onRetourTableauBord}
-        className="flex items-center mx-auto text-gray-600 hover:text-gray-800 transition-colors"
+        className="cursor-pointer flex items-center mx-auto text-gray-600 hover:text-gray-800 transition-colors"
       >
         <ChevronLeftIcon className="w-4 h-4 mr-1" />
         Retour au Tableau de bord

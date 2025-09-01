@@ -97,7 +97,8 @@ export const useHistorique = () => {
         toast.error("Historique non trouvé.");
         return;
       }
-      // TODO: Afficher les détails dans un modal
+      var dataString = JSON.stringify(historique.apres);
+      router.push(`/note-preview/${historique.note_id}?action=note_historique&note_data=${encodeURIComponent(dataString)}`);
     } catch (error) {
       toast.error("Erreur lors du chargement des détails.");
       console.error("Erreur lors du chargement des détails:", error);
@@ -120,5 +121,6 @@ export const useHistorique = () => {
     updateFilters,
     actions,
     loadDatas,
+    router
   };
 };

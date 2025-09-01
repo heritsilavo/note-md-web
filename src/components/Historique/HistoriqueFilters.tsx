@@ -27,11 +27,11 @@ const HistoriqueFilters: React.FC<HistoriqueFiltersProps> = ({
           <select
             value={filters.filtreNote}
             onChange={handleNoteFilterChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            className="cursor-pointer w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
-            <option value="">Filtrer par note</option>
+            <option className="cursor-pointer" value="">Filtrer par note</option>
             {nomNotes.map((nom, index) => (
-              <option key={index} value={nom}>
+              <option className="cursor-pointer" key={index} value={nom}>
                 {nom}
               </option>
             ))}
@@ -49,7 +49,7 @@ const HistoriqueFilters: React.FC<HistoriqueFiltersProps> = ({
         {/* Bouton réinitialiser */}
         <button
           onClick={onReset}
-          className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm"
+          className="cursor-pointer flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm"
         >
           <FunnelIcon className="w-4 h-4 mr-2" />
           Réinitialiser les filtres
