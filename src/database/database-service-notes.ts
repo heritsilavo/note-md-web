@@ -138,3 +138,29 @@ export async function getNoteByTitle(nomNote: string) {
   };
   return data ? new NoteDto(data) : null;
 }
+
+/**
+ * Get a note by its title qui n'est pas le note donné
+ * @param nomNote - The title of the note to retrieve.
+ * @param noteSupabaseId - L'id du note qui n'est pas pris en compte
+ * @returns Promise resolving to the note or error.
+ */
+export async function getNoteByTitleExcluding(nomNote: string, noteSupabaseId: string) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .neq('status', 'deleted')
+      .neq('supabase_id', noteSupabaseId)
+      .eq('nom_note', nomNote)
+      .limit(1)
+      .single();
+    if (error) {
+      console.log("getNoteByTitle error:", error);
+      return null;
+    };
+    return data ? new NoteDto(data) : null;
+  } catch {
+    return null
+  }
+}

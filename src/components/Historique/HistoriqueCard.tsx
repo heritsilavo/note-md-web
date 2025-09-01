@@ -35,19 +35,21 @@ const HistoriqueCard: React.FC<HistoriqueCardProps> = ({
             >
               {historique.action}
             </span>
-            
+
           </div>
         </div>
 
         {/* ACTION BUTTONS */}
         <div className="flex gap-2 shrink-0">
-          <button
-            onClick={() => onRestaurer(historique.id)}
-            className="cursor-pointer flex items-center px-3 py-1.5 text-sm text-white bg-gray-800 hover:bg-gray-900 rounded-md transition-colors shadow-sm"
-          >
-            <ArrowPathIcon className="w-4 h-4 mr-1" />
-            Restaurer
-          </button>
+          {
+            (historique.action != "SYNCHRONISATION") && <button
+              onClick={() => onRestaurer(historique.id)}
+              className="cursor-pointer flex items-center px-3 py-1.5 text-sm text-white bg-gray-800 hover:bg-gray-900 rounded-md transition-colors shadow-sm"
+            >
+              <ArrowPathIcon className="w-4 h-4 mr-1" />
+              Restaurer
+            </button>
+          }
           <button
             onClick={() => onVoirDetails(historique.id)}
             className="cursor-pointer flex items-center px-3 py-1.5 text-sm text-gray-700 hover:text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"

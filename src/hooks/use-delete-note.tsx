@@ -37,11 +37,12 @@ export function useDeleteNote({ noteId }: UseDeleteNoteProps) {
     const openModal = () => {
         setModal({
             open: true,
-            content: <div className="p-2 flex justify-center items-center font-bold text-red-500">Confirmer la suppression ?</div>,
-            noHeader: true,
+            content: null,
+            header: "Confirmer la suppression ?",
             onConfirm: () => confirmDelete(),
             animationType: "elastic", // 'elastic' | 'smooth' | 'fade'
-            modalContentClassname: "border-0"
+            modalContentClassname: "border-0",
+            btnsLabel: { confirm: "Oui, supprimer", cancel: "Annuler" },
         });
     };
 

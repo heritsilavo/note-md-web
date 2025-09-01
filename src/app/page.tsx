@@ -2,6 +2,7 @@ import Summary from "@/components/NotesList/Summary";
 import NotesCards from "../components/NotesList/NotesCardList";
 import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
+import "@/css/enable-body-scroll.css"
 
 export const dynamic = 'force-dynamic';
 
