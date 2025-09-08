@@ -22,7 +22,7 @@ export default function Home() {
       </section> */}
 
         {/* Aperçu des notes */}
-        <Summary notesCount={0} notesThisWeek={0} pendingSync={0} upcomingReminders={0} />
+        <Summary />
 
         {/* Toutes vos notes */}
         <section>

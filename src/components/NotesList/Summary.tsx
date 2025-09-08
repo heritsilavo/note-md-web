@@ -1,37 +1,42 @@
+import { SummaryDataType } from "@/types/summary-data.types";
+import { fetchApi } from "@/utils/fetch-api";
 import { FaRegStickyNote } from "react-icons/fa";
 import { FiCalendar, FiClock, FiCheckCircle } from "react-icons/fi";
 
-type SummaryProps = {
-  notesCount: number;
-  notesThisWeek: number;
-  upcomingReminders: number;
-  pendingSync: number;
-};
+export default async function Summary() {
+  const response = await fetchApi("/api/notes/getSummary");
+  if (!response.ok) {
+    return <>Erreur HTTP: ${response.status}</>
+  }
+  const summaryData: SummaryDataType = await response.json()
+  
+  const items = [
+    {
+      label: "Notes totales",
+      icon: <FaRegStickyNote className="text-lg text-gray-700 ml-2" />,
+      key: "notesCount",
+      value: summaryData.notesCount
+    },
+    {
+      label: "Créées cette semaine",
+      icon: <FiCalendar className="text-lg text-gray-700 ml-2" />,
+      key: "notesThisWeek",
+      value: summaryData.notesThisWeek
+    },
+    {
+      label: "Rappels à venir",
+      icon: <FiClock className="text-lg text-gray-700 ml-2" />,
+      key: "upcomingReminders",
+      value: summaryData.upcomingReminders
+    },
+    {
+      label: "En attente de synchronisation",
+      icon: <FiCheckCircle className="text-lg text-gray-700 ml-2" />,
+      key: "pendingSync",
+      value: summaryData.pendingSync
+    },
+  ];
 
-const items = [
-  {
-    label: "Notes totales",
-    icon: <FaRegStickyNote className="text-lg text-gray-700 ml-2" />,
-    key: "notesCount",
-  },
-  {
-    label: "Créées cette semaine",
-    icon: <FiCalendar className="text-lg text-gray-700 ml-2" />,
-    key: "notesThisWeek",
-  },
-  {
-    label: "Rappels à venir",
-    icon: <FiClock className="text-lg text-gray-700 ml-2" />,
-    key: "upcomingReminders",
-  },
-  {
-    label: "En attente de synchronisation",
-    icon: <FiCheckCircle className="text-lg text-gray-700 ml-2" />,
-    key: "pendingSync",
-  },
-];
-
-export default function Summary(props: SummaryProps) {
   return (
     <section>
       <h2 className="text-2xl font-bold text-center mb-8">Aperçu de vos notes</h2>
@@ -42,7 +47,7 @@ export default function Summary(props: SummaryProps) {
               <span className="text-gray-500 font-medium">{item.label}</span>
               {item.icon}
             </div>
-            <span className="text-3xl font-bold">{props[item.key as keyof SummaryProps]}</span>
+            <span className="text-3xl font-bold">{item.value}</span>
           </div>
         ))}
       </div>

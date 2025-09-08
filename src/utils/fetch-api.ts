@@ -1,5 +1,3 @@
-import { CustomError } from '@heritsilavo/react-error-boundary/next';
-
 export async function fetchApi(input: string | URL | Request, init?: RequestInit) {
   let url: string | URL | Request = input;
   if (typeof input === "string" && input.startsWith("/")) {
@@ -11,12 +9,8 @@ export async function fetchApi(input: string | URL | Request, init?: RequestInit
     console.log("fetchApi error response:", response);
     
     const errorText = await response.text();
-    const errorJson = {error: errorText};
-    try {
-        Object.assign(errorJson, JSON.parse(errorText));
-    } catch {}
-        
-    throw new CustomError(String(response.status) || "ERROR", errorJson.error, "");
+    
+    throw new Error(errorText)
   }
   return response;
 }

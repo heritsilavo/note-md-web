@@ -1,5 +1,6 @@
 import { supabase } from "@/database/supabase";
 import { NoteDto } from "./note-dto";
+import { SummaryDataType } from "@/types/summary-data.types";
 
 /**
  * Fetch all notes from the database.
@@ -162,5 +163,71 @@ export async function getNoteByTitleExcluding(nomNote: string, noteSupabaseId: s
     return data ? new NoteDto(data) : null;
   } catch {
     return null
+  }
+}
+
+/**
+ * Récupérer des données de résumé depuis la base de données
+ * @returns { notesCount, notesThisWeek, upcomingReminders, pendingSync }
+ */
+export async function getSummaryData(): Promise<SummaryDataType | null> {
+  try {
+    // 1. Compter le nombre total de notes (hors celles supprimées)
+    const { count: notesCount, error: countError } = await supabase
+      .from('notes')
+      .select('*', { count: 'exact', head: true })
+      .neq('status', 'deleted');
+
+    if (countError) throw countError;
+
+    // 2. Compter les notes créées cette semaine
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Début de semaine (dimanche)
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const { count: notesThisWeek, error: weekError } = await supabase
+      .from('notes')
+      .select('*', { count: 'exact', head: true })
+      .neq('status', 'deleted')
+      .gte('date_creation', startOfWeek.toISOString());
+
+    if (weekError) throw weekError;
+
+    // 3. Récupérer les rappels à venir (dans les 7 prochains jours)
+    // const now = new Date();
+    // const nextWeek = new Date();
+    // nextWeek.setDate(now.getDate() + 7);
+
+    // const { data: remindersData, error: remindersError } = await supabase
+    //   .from('notes')
+    //   .select('rappel')
+    //   .neq('status', 'deleted')
+    //   .not('rappel', 'is', null)
+    //   .gte('rappel', now.toISOString())
+    //   .lte('rappel', nextWeek.toISOString());
+
+    // if (remindersError) throw remindersError;
+    // const upcomingReminders = remindersData?.length || 0;
+    const upcomingReminders = 0;
+
+    // 4. Compter les notes non synchronisées
+    const { count: pendingSync, error: syncError } = await supabase
+      .from('notes')
+      .select('*', { count: "exact", head: true })
+      .neq('status', 'deleted')
+      .eq('synced', false);
+
+    if (syncError) throw syncError;
+
+    return {
+      notesCount: notesCount || 0,
+      notesThisWeek: notesThisWeek || 0,
+      upcomingReminders,
+      pendingSync: pendingSync || 0
+    };
+
+  } catch (e) {
+    console.error("Error in getSummaryData:", e);
+    return null;
   }
 }
