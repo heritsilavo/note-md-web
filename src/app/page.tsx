@@ -2,24 +2,18 @@ import Summary from "@/components/NotesList/Summary";
 import NotesCards from "../components/NotesList/NotesCardList";
 import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
+import HeroSection from "@/components/HeroSection";
 
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
+  const is_in_test_env = process.env.NEXT_PUBLIC_ENV_TEST == "true";
+
   return (
     <div className="w-[100dvw] h-[calc(100vh-(53px+68px))] overflow-x-hidden overflow-y-scroll outline-none border-none">
       <main className="flex flex-col gap-16 px-4 sm:px-8 py-8 max-w-7xl mx-auto">
         {/* Hero section */}
-        {/* <section className="bg-blue-50 rounded-xl p-10 flex flex-col md:flex-row items-center gap-8">
-        <div className="flex-1">
-          <h1 className="text-4xl font-bold mb-4">Organisez vos pensées, synchronisez sans effort.</h1>
-          <p className="text-gray-700 mb-6">MindKeep Notes est votre solution complète pour une gestion de notes Markdown sans accroc, avec synchronisation en temps réel et organisation intelligente.</p>
-          <button className="bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold">Créer votre première note</button>
-        </div>
-        <div className="flex-1 flex justify-center">
-          <img src="/next.svg" alt="Aperçu application" className="rounded-lg shadow-lg w-full max-w-md" />
-        </div>
-      </section> */}
+        {is_in_test_env && <HeroSection />}
 
         {/* Aperçu des notes */}
         <Summary />

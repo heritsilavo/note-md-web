@@ -7,7 +7,7 @@ CHECK: Historiques (Ajout, modification, suppression)
 CHECK: Liens dans headers
 CHECK: Liens dans footer
 CHECK: update prod database
-TODO: Chiffres dans dashboard
+CHECK: Chiffres dans dashboard
 TODO: Creer database de test
 TODO: Push on vercel
 TODO: Crypter les données
