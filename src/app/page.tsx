@@ -43,7 +43,7 @@ export default function Home() {
         </section>
 
         {/* Aperçu des pièces jointes récentes */}
-        <section>
+        {/* <section>
           <h2 className="text-2xl font-bold mb-6">Aperçu des pièces jointes récentes</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="bg-white rounded-lg p-6 shadow flex flex-col items-center">
@@ -63,7 +63,7 @@ export default function Home() {
               <span className="text-xs text-gray-500">Image</span>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Call to action final */}
         <section className="bg-gray-50 rounded-xl p-8 flex flex-col items-center mt-8">
