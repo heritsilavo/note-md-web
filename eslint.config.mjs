@@ -37,6 +37,8 @@ const eslintConfig = [
       
       // Désactiver les erreurs pour les interfaces vides
       "@typescript-eslint/no-empty-object-type": "off",
+
+      "@typescript-eslint/no-require-imports": "off"
     },
   },
 ];
