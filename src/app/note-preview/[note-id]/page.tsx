@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css';
 import '@toast-ui/editor/toastui-editor.css'
 import { useDeleteNote } from "@/hooks/use-delete-note";
 import LoadingIcon from "@/components/LoadingSpinner";
+import { decrypt } from "@/utils/crypto-js";
 
 const ToastViewer = dynamic(() => import("@toast-ui/react-editor").then(mod => mod.Viewer), {
     ssr: false,
@@ -51,7 +52,7 @@ export default function Page() {
                 return;
             }
             setError(null);
-            setNoteData(data.data);
+            setNoteData(data);
         } catch (error) {
             console.error("Failed to fetch note data:", error);
             setError("Impossible de charger la note");

@@ -1,6 +1,7 @@
 import { supabase } from "@/database/supabase";
 import { NoteDto } from "./note-dto";
 import { SummaryDataType } from "@/types/summary-data.types";
+import { decrypt, encrypt } from "@/utils/crypto-js";
 
 /**
  * Fetch all notes from the database.
@@ -17,7 +18,7 @@ export async function getNotes() {
     supabase_id: note.supabase_id,
     id: note.id,
     nom_note: note.nom_note,
-    contenu_note: note.contenu_note,
+    contenu_note: decrypt(note.contenu_note),
     date_creation: note.date_creation,
     date_heure_note: note.date_heure_note,
     date_sync: note.date_sync,
@@ -58,7 +59,7 @@ export async function addNote(note: NoteDto) {
       supabase_id: note.supabase_id,
       id: note.id,
       nom_note: note.nom_note,
-      contenu_note: note.contenu_note,
+      contenu_note: encrypt(note.contenu_note),
       date_creation: note.date_creation,
       date_heure_note: note.date_heure_note,
       date_sync: note.date_sync,
@@ -84,7 +85,17 @@ export async function addNote(note: NoteDto) {
  * @returns Promise resolving to the updated note or error.
  */
 export async function updateNote(id: string, updates: Partial<NoteDto>) {
-  const { data, error } = await supabase.from('notes').update(updates).eq('supabase_id', id).select();
+  const updateData: any = { ...updates };
+
+  if (!!updates.contenu_note) {
+    updateData.contenu_note = encrypt(updates.contenu_note);
+  }
+
+  const { data, error } = await supabase
+    .from('notes')
+    .update(updateData)
+    .eq('supabase_id', id)
+    .select();
   if (error) throw error;
   return data?.[0] ? new NoteDto(data[0]) : null;
 }
@@ -117,7 +128,20 @@ export async function softDeleteNote(id: string) {
  * @returns Promise resolving to the note or error.
  */
 export async function getNoteById(noteId: string) {
-  return await supabase.from('notes').select('*').eq('supabase_id', noteId).single();
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .eq('supabase_id', noteId)
+    .single();
+  if (error) {
+    console.log("getNoteByTitle error:", error);
+    return null;
+  };
+  const noteData = { ...data }
+  if (!!noteData.contenu_note) {
+    noteData.contenu_note = decrypt(data.contenu_note)
+  }
+  return data ? new NoteDto(noteData) : null;
 }
 
 /**
@@ -137,7 +161,11 @@ export async function getNoteByTitle(nomNote: string) {
     console.log("getNoteByTitle error:", error);
     return null;
   };
-  return data ? new NoteDto(data) : null;
+  const noteData = { ...data }
+  if (!!noteData.contenu_note) {
+    noteData.contenu_note = decrypt(data.contenu_note)
+  }
+  return data ? new NoteDto(noteData) : null;
 }
 
 /**
@@ -160,7 +188,11 @@ export async function getNoteByTitleExcluding(nomNote: string, noteSupabaseId: s
       console.log("getNoteByTitle error:", error);
       return null;
     };
-    return data ? new NoteDto(data) : null;
+    const noteData = { ...data }
+    if (!!noteData.contenu_note) {
+      noteData.contenu_note = decrypt(data.contenu_note)
+    }
+    return data ? new NoteDto(noteData) : null;
   } catch {
     return null
   }

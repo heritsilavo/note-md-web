@@ -2,6 +2,7 @@
 
 import { DEFAULT_NOTE_MARKDOWN } from "@/constants/default-note-markdown";
 import { NoteDto } from "@/database/note-dto";
+import { decrypt } from "@/utils/crypto-js";
 import { fetchApi } from "@/utils/fetch-api";
 import { generateRandomId } from "@/utils/generate-new-id";
 import { CustomError } from "@heritsilavo/react-error-boundary/next";
@@ -34,7 +35,8 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
                 if (!res.ok) {
                     throw new Error(`Failed to fetch note with id ${noteSupabaseId}`);
                 }
-                const {data}: {data:NoteDto} = await res.json();
+                const data: NoteDto = await res.json();
+                
                 setNote(data.contenu_note);
                 setTitle(data.nom_note);
                 setCategories(data.categorie);
