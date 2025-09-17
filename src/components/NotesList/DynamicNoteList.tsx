@@ -30,6 +30,7 @@ export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
     const [selectedCategory, setSelectedCategory] = useState("")
     const [selectedTag, setSelectedTag] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid")
+    const [showOnlyOrphanNotes, setShowOnlyOrphanNotes] = useState(true)
 
     // Charger le viewMode au montage du composant
     useEffect(() => {
@@ -73,9 +74,12 @@ export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
             const matchesTag = selectedTag === "" || 
                 note.balises.includes(selectedTag)
             
-            return matchesSearch && matchesStatus && matchesCategory && matchesTag
+            // Filtre par notes sans parent
+            const matchesOrphanFilter = !showOnlyOrphanNotes || note.parents.length === 0
+            
+            return matchesSearch && matchesStatus && matchesCategory && matchesTag && matchesOrphanFilter
         })
-    }, [notes, searchTerm, selectedStatus, selectedCategory, selectedTag])
+    }, [notes, searchTerm, selectedStatus, selectedCategory, selectedTag, showOnlyOrphanNotes])
 
     return (
         <section>
@@ -108,7 +112,7 @@ export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4 items-end">
                 <input 
                     type="text" 
                     placeholder="Rechercher des notes par titre ou contenu..." 
@@ -154,6 +158,19 @@ export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
                         </option>
                     ))}
                 </select>
+                
+                <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md border-[0.2px] border-gray-400">
+                    <input 
+                        type="checkbox" 
+                        id="orphan-notes"
+                        checked={showOnlyOrphanNotes}
+                        onChange={(e) => setShowOnlyOrphanNotes(e.target.checked)}
+                        className="cursor-pointer"
+                    />
+                    <label htmlFor="orphan-notes" className="text-sm cursor-pointer whitespace-nowrap">
+                        Notes principales
+                    </label>
+                </div>
                 
                 <Link 
                     href="/note-editor?action=new_note" 

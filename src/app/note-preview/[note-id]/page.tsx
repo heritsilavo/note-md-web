@@ -31,6 +31,9 @@ export default function Page() {
     const [isLoading, setIsLoading] = useState(false);
     const [noteData, setNoteData] = useState<NoteDto | undefined>(noteHistData || undefined);
     const [error, setError] = useState<string | null>(null);
+    const [parentNotes, setParentNotes] = useState<NoteDto[]>([]);
+    const [childNotes, setChildNotes] = useState<NoteDto[]>([]);
+    const [copySuccess, setCopySuccess] = useState(false);
 
     const {
         openModal,
@@ -53,6 +56,9 @@ export default function Page() {
             }
             setError(null);
             setNoteData(data);
+            
+            // Charger les relations parent-enfant
+            await loadRelations(data);
         } catch (error) {
             console.error("Failed to fetch note data:", error);
             setError("Impossible de charger la note");
@@ -61,9 +67,47 @@ export default function Page() {
         }
     }
 
+    const loadRelations = async (note: NoteDto) => {
+        try {
+            // Charger les notes parents
+            if (note.parents && note.parents.length > 0) {
+                const parentPromises = note.parents.map(parentId => 
+                    fetchApi(`/api/notes/${parentId}`).then(res => res.json())
+                );
+                const parents = await Promise.all(parentPromises);
+                setParentNotes(parents.filter(p => p && !p.error));
+            }
+
+            // Charger les notes enfants
+            if (note.enfants && note.enfants.length > 0) {
+                const childPromises = note.enfants.map(childId => 
+                    fetchApi(`/api/notes/${childId}`).then(res => res.json())
+                );
+                const children = await Promise.all(childPromises);
+                setChildNotes(children.filter(c => c && !c.error));
+            }
+        } catch (error) {
+            console.error("Failed to load relations:", error);
+        }
+    };
+
+    const copyToClipboard = async () => {
+        if (!noteData?.contenu_note) return;
+        
+        try {
+            await navigator.clipboard.writeText(noteData.contenu_note);
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
+        } catch (error) {
+            console.error("Failed to copy content:", error);
+        }
+    };
+
     useEffect(() => {
         if ( action != "note_historique" && !!noteId) {
             getNoteData();
+        } else if (noteHistData) {
+            loadRelations(noteHistData);
         }
     }, [noteId, action]);
 
@@ -133,9 +177,32 @@ export default function Page() {
                                         {noteData.nom_note}
                                     </h1>
                                     {
-                                        (action != "note_historique") && <button onClick={() => { router.push(`/note-editor/?action=edit_note&id=${noteId}`) }} className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                                            Modifier
-                                        </button>
+                                        (action != "note_historique") && (
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={copyToClipboard}
+                                                    className={`cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                                        copySuccess 
+                                                            ? 'bg-green-600 text-white' 
+                                                            : 'bg-gray-600 hover:bg-gray-700 text-white'
+                                                    }`}
+                                                >
+                                                    {copySuccess ? 'Copié !' : 'Copier'}
+                                                </button>
+                                                <button 
+                                                    onClick={() => router.push(`/note-editor?action=new_note&parent=${noteData.supabase_id}`)}
+                                                    className="cursor-pointer bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                                                >
+                                                    Ajouter note enfant
+                                                </button>
+                                                <button 
+                                                    onClick={() => router.push(`/note-editor/?action=edit_note&id=${noteId}`)} 
+                                                    className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                                                >
+                                                    Modifier
+                                                </button>
+                                            </div>
+                                        )
                                     }
                                 </div>
 
@@ -154,6 +221,49 @@ export default function Page() {
 
                         {/* Sidebar */}
                         <div className="space-y-6">
+                            {/* Relations Parent-Enfant */}
+                            {(parentNotes.length > 0 || childNotes.length > 0) && (
+                                <div className="bg-white shadow-sm rounded-lg p-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Relations</h3>
+                                    
+                                    {/* Notes parents */}
+                                    {parentNotes.length > 0 && (
+                                        <div className="mb-4">
+                                            <h4 className="text-sm font-medium text-gray-500 mb-2">Notes parentes :</h4>
+                                            <div className="space-y-2">
+                                                {parentNotes.map((parent) => (
+                                                    <button
+                                                        key={parent.supabase_id}
+                                                        onClick={() => router.push(`/note-preview/${parent.supabase_id}`)}
+                                                        className="cursor-pointer block w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100 rounded border border-blue-200 transition-colors"
+                                                    >
+                                                        ↑ {parent.nom_note}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Notes enfants */}
+                                    {childNotes.length > 0 && (
+                                        <div>
+                                            <h4 className="text-sm font-medium text-gray-500 mb-2">Notes enfants :</h4>
+                                            <div className="space-y-2">
+                                                {childNotes.map((child) => (
+                                                    <button
+                                                        key={child.supabase_id}
+                                                        onClick={() => router.push(`/note-preview/${child.supabase_id}`)}
+                                                        className="cursor-pointer block w-full text-left p-2 text-sm bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors"
+                                                    >
+                                                        ↓ {child.nom_note}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Catégories */}
                             <div className="bg-white shadow-sm rounded-lg p-6">
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Catégories</h3>

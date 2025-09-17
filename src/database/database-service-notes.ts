@@ -31,6 +31,8 @@ export async function getNotes() {
     user_id: note.user_id,
     balises: note.balises ?? [],
     date_modification: note.date_modification,
+    parents: note.parents ?? [],
+    enfants: note.enfants ?? [],
   }));
 }
 
@@ -72,6 +74,8 @@ export async function addNote(note: NoteDto) {
       user_id: note.user_id,
       balises: note.balises,
       date_modification: note.date_modification,
+      parents: note.parents,
+      enfants: note.enfants,
     }
   ]).select();
   if (error) throw error;
@@ -296,6 +300,130 @@ export async function searchNotes(nom: string) {
 
   } catch (error) {
     console.error("Error in searchNotes:", error);
+    return [];
+  }
+}
+
+/**
+ * Ajouter une relation parent-enfant entre deux notes
+ * @param parentId - ID de la note parent
+ * @param enfantId - ID de la note enfant
+ * @returns Promise resolving to success boolean
+ */
+export async function addParentEnfantRelation(parentId: string, enfantId: string) {
+  try {
+    // 1. Récupérer la note parent
+    const noteParent = await getNoteById(parentId);
+    if (!noteParent) throw new Error("Note parent introuvable");
+
+    // 2. Récupérer la note enfant
+    const noteEnfant = await getNoteById(enfantId);
+    if (!noteEnfant) throw new Error("Note enfant introuvable");
+
+    // 3. Ajouter l'enfant à la liste des enfants du parent (si pas déjà présent)
+    if (!noteParent.enfants.includes(enfantId)) {
+      noteParent.enfants.push(enfantId);
+      await updateNote(parentId, { enfants: noteParent.enfants });
+    }
+
+    // 4. Ajouter le parent à la liste des parents de l'enfant (si pas déjà présent)
+    if (!noteEnfant.parents.includes(parentId)) {
+      noteEnfant.parents.push(parentId);
+      await updateNote(enfantId, { parents: noteEnfant.parents });
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error in addParentEnfantRelation:", error);
+    return false;
+  }
+}
+
+/**
+ * Supprimer une relation parent-enfant entre deux notes
+ * @param parentId - ID de la note parent
+ * @param enfantId - ID de la note enfant
+ * @returns Promise resolving to success boolean
+ */
+export async function removeParentEnfantRelation(parentId: string, enfantId: string) {
+  try {
+    // 1. Récupérer la note parent
+    const noteParent = await getNoteById(parentId);
+    if (noteParent) {
+      // Retirer l'enfant de la liste des enfants du parent
+      noteParent.enfants = noteParent.enfants.filter(id => id !== enfantId);
+      await updateNote(parentId, { enfants: noteParent.enfants });
+    }
+
+    // 2. Récupérer la note enfant
+    const noteEnfant = await getNoteById(enfantId);
+    if (noteEnfant) {
+      // Retirer le parent de la liste des parents de l'enfant
+      noteEnfant.parents = noteEnfant.parents.filter(id => id !== parentId);
+      await updateNote(enfantId, { parents: noteEnfant.parents });
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error in removeParentEnfantRelation:", error);
+    return false;
+  }
+}
+
+/**
+ * Récupérer les notes enfants d'une note donnée
+ * @param parentId - ID de la note parent
+ * @returns Promise resolving to an array of child notes
+ */
+export async function getNotesEnfants(parentId: string) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .neq('status', 'deleted')
+      .contains('parents', [parentId])
+      .order('date_modification', { ascending: false });
+
+    if (error) throw error;
+
+    return (data ?? []).map((note: any) => {
+      const noteData = { ...note };
+      if (!!noteData.contenu_note) {
+        noteData.contenu_note = decrypt(note.contenu_note);
+      }
+      return new NoteDto(noteData);
+    });
+  } catch (error) {
+    console.error("Error in getNotesEnfants:", error);
+    return [];
+  }
+}
+
+/**
+ * Récupérer les notes parents d'une note donnée
+ * @param enfantId - ID de la note enfant
+ * @returns Promise resolving to an array of parent notes
+ */
+export async function getNotesParents(enfantId: string) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .neq('status', 'deleted')
+      .contains('enfants', [enfantId])
+      .order('date_modification', { ascending: false });
+
+    if (error) throw error;
+
+    return (data ?? []).map((note: any) => {
+      const noteData = { ...note };
+      if (!!noteData.contenu_note) {
+        noteData.contenu_note = decrypt(note.contenu_note);
+      }
+      return new NoteDto(noteData);
+    });
+  } catch (error) {
+    console.error("Error in getNotesParents:", error);
     return [];
   }
 }

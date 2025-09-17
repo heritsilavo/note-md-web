@@ -17,6 +17,8 @@ export class NoteDto {
   status: NoteStatus;
   user_id: string;
   balises: string[];
+  parents: string[];  // IDs des notes parentes
+  enfants: string[];  // IDs des notes enfantes
 
   constructor(params: Partial<NoteDto> = {}) {
     this.supabase_id = params.supabase_id ?? "";
@@ -35,5 +37,7 @@ export class NoteDto {
     this.status = params.status ?? "created";
     this.user_id = params.user_id ?? "";
     this.balises = params.balises ?? [];
+    this.parents = params.parents ?? [];
+    this.enfants = params.enfants ?? [];
   }
 }

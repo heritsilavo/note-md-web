@@ -1,6 +1,7 @@
 "use client"
 
 import { DEFAULT_NOTE_MARKDOWN } from "@/constants/default-note-markdown";
+import { addParentEnfantRelation } from "@/database/database-service-notes";
 import { NoteDto } from "@/database/note-dto";
 import { decrypt } from "@/utils/crypto-js";
 import { fetchApi } from "@/utils/fetch-api";
@@ -13,9 +14,10 @@ import { toast } from "react-toastify";
 type UseNoteProps = {
     action: "new_note" | "edit_note";
     noteSupabaseId: string | null;
+    parentId?: string | null; // Nouveau paramètre pour l'ID du parent
 }
 
-export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
+export default function useNote({ action, noteSupabaseId, parentId }: UseNoteProps) {
 
     const router = useRouter();
 
@@ -26,11 +28,37 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
     const [note, setNote] = useState(DEFAULT_NOTE_MARKDOWN);
     const [title, setTitle] = useState("Titre du note");
     const [initialNote, setInitialNote] = useState<NoteDto | null>(null);
+    const [parentNote, setParentNote] = useState<NoteDto | null>(null); // Note parent
+
+    const loadParentNote = async (parentId: string) => {
+        try {
+            const res = await fetchApi(`/api/notes/${parentId}`);
+            if (!res.ok) {
+                throw new Error(`Failed to fetch parent note with id ${parentId}`);
+            }
+            const data: NoteDto = await res.json();
+            setParentNote(data);
+            
+            // Hériter des catégories du parent par défaut
+            setCategories(data.categorie.length > 0 ? data.categorie : ["All"]);
+            
+        } catch (error) {
+            console.error("Error loading parent note:", error);
+            toast.error("Erreur lors du chargement de la note parent");
+        }
+    };
 
     const init = async () => {
-        if (action === "edit_note" && noteSupabaseId) {
-            setIsLoading(true);
-            try {
+        setIsLoading(true);
+        
+        try {
+            // Charger la note parent si spécifiée
+            if (parentId && action === "new_note") {
+                await loadParentNote(parentId);
+            }
+
+            // Charger la note à éditer si nécessaire
+            if (action === "edit_note" && noteSupabaseId) {
                 const res = await fetchApi(`/api/notes/${noteSupabaseId}`);
                 if (!res.ok) {
                     throw new Error(`Failed to fetch note with id ${noteSupabaseId}`);
@@ -43,17 +71,15 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
                 setBalises(data.balises);
                 setRappel(data.rappel || null);
                 setInitialNote(data);
-            } catch (error) {
-                console.log(error);
-                if (!(error instanceof CustomError)) {
-                    toast.error(`Erreur lors du chargement de la note`);
-                } else {
-                    toast.error(`${error.code} : ${error.message}`);
-                }
-            } finally {
-                setIsLoading(false);
             }
-        } else {
+        } catch (error) {
+            console.log(error);
+            if (!(error instanceof CustomError)) {
+                toast.error(`Erreur lors du chargement des données`);
+            } else {
+                toast.error(`${error.code} : ${error.message}`);
+            }
+        } finally {
             setIsLoading(false);
         }
     }
@@ -62,8 +88,10 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
         init();
     }, []);
 
+
     const handleSave = async () => {
         setIsLoading(true);
+        const newNoteId = generateRandomId();
         const newNote: NoteDto = {
             nom_note: title,
             contenu_note: note,
@@ -73,14 +101,16 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
             date_creation: new Date().toISOString(),
             id: "",
             status: "created",
-            supabase_id: generateRandomId(),
+            supabase_id: newNoteId,
             synced: true,
             typenote: "markdown",
             user_id: "user-123",
             visible_pour_date_seulement: false,
             date_sync: "",
             rappel: rappel || undefined,
-            date_modification: new Date().toISOString()
+            date_modification: new Date().toISOString(),
+            parents: parentId ? [parentId] : [], // Ajouter le parent s'il existe
+            enfants: [],
         };
 
         try {
@@ -92,7 +122,14 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
                 body: JSON.stringify(newNote),
             });
 
+            // Créer la relation parent-enfant si nécessaire
+            if (parentId) {
+                await addParentEnfantRelation(parentId, newNoteId);
+            }
+
             console.log("Saving note:", newNote);
+            
+            
             router.push("/");
             toast.success("Note enregistrée avec succès !");
         } catch (error) {
@@ -131,7 +168,7 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
             });
 
             console.log("Updating note:", updatedNote);
-            router.push("/");
+            router.push(`/note-viewer/${initialNote.supabase_id}`);
             toast.success("Note modifiée avec succès !");
         } catch (error) {
             if (!(error instanceof CustomError)) {
@@ -161,6 +198,7 @@ export default function useNote({ action, noteSupabaseId }: UseNoteProps) {
         setTitle,
         handleSave,
         initialNote,
-        handleConfirmModif
+        handleConfirmModif,
+        parentNote, // Nouveau retour pour la note parent
     };
 }
