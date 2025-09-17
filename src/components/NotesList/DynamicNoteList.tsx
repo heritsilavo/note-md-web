@@ -2,19 +2,45 @@
 
 import { NoteDto } from "@/database/note-dto"
 import Link from "next/link"
-import { FiEdit } from "react-icons/fi"
+import { FiEdit, FiGrid, FiList, FiTable } from "react-icons/fi"
 import NoteItem from "./NoteItem"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
+import NoteListItem from "./NoteListItem"
+import NoteArrayItem from "./NoteArrayItem"
 
 type DynamicNotesListProps = {
     notes: NoteDto[]
 }
 
+type ViewMode = "grid" | "list" | "array"
+
 export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
+    // Fonction pour charger le viewMode depuis le localStorage
+    const loadViewMode = (): ViewMode => {
+        if (typeof window === 'undefined') {
+            return "grid"
+        }
+        
+        const saved = localStorage.getItem('notesViewMode')
+        return (saved as ViewMode) || "grid"
+    }
+
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedStatus, setSelectedStatus] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("")
     const [selectedTag, setSelectedTag] = useState("")
+    const [viewMode, setViewMode] = useState<ViewMode>("grid")
+
+    // Charger le viewMode au montage du composant
+    useEffect(() => {
+        const savedViewMode = loadViewMode()
+        setViewMode(savedViewMode)
+    }, [])
+
+    // Sauvegarder le viewMode à chaque changement
+    useEffect(() => {
+        localStorage.setItem('notesViewMode', viewMode)
+    }, [viewMode])
 
     // Extraire les catégories uniques
     const categories = useMemo(() => {
@@ -53,7 +79,34 @@ export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
 
     return (
         <section>
-            <h2 className="text-2xl font-bold mb-6">Toutes vos notes</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Toutes vos notes</h2>
+                
+                <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Affichage:</span>
+                    <button 
+                        className={`cursor-pointer p-2 rounded-md ${viewMode === "grid" ? "bg-blue-100 text-blue-900" : "bg-gray-100 text-gray-600"}`}
+                        onClick={() => setViewMode("grid")}
+                        aria-label="Vue grille"
+                    >
+                        <FiGrid className="w-5 h-5" />
+                    </button>
+                    <button 
+                        className={`cursor-pointer p-2 rounded-md ${viewMode === "list" ? "bg-blue-100 text-blue-900" : "bg-gray-100 text-gray-600"}`}
+                        onClick={() => setViewMode("list")}
+                        aria-label="Vue liste"
+                    >
+                        <FiList className="w-5 h-5" />
+                    </button>
+                    <button 
+                        className={`cursor-pointer p-2 rounded-md ${viewMode === "array" ? "bg-blue-100 text-blue-900" : "bg-gray-100 text-gray-600"}`}
+                        onClick={() => setViewMode("array")}
+                        aria-label="Vue tableau"
+                    >
+                        <FiTable className="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 items-end">
                 <input 
@@ -111,11 +164,39 @@ export default function DynamicNotesList({ notes }: DynamicNotesListProps) {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {filteredNotes.map((note, idx) => (
-                    <NoteItem key={idx} note={note} />
-                ))}
-            </div>
+            {viewMode === "grid" ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {filteredNotes.map((note, idx) => (
+                        <NoteItem key={idx} note={note} />
+                    ))}
+                </div>
+            ) : viewMode === "list" ? (
+                <div className="space-y-4">
+                    {filteredNotes.map((note, idx) => (
+                        <NoteListItem key={idx} note={note} />
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catégories</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {filteredNotes.map((note, idx) => (
+                                <NoteArrayItem key={idx} note={note} />
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {filteredNotes.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
