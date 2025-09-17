@@ -1,6 +1,5 @@
 import Summary from "@/components/NotesList/Summary";
-import NotesCards from "../components/NotesList/NotesCardList";
-import { FiEdit } from "react-icons/fi";
+import NotesList from "../components/NotesList/NotesList";
 import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 
@@ -19,29 +18,8 @@ export default function Home() {
         <Summary />
 
         {/* Toutes vos notes */}
-        <section>
-          <h2 className="text-2xl font-bold mb-6">Toutes vos notes</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 items-end">
-            <input type="text" placeholder="Rechercher des notes par titre ou contenu..." className="border-[0.2px] border-gray-400 cursor-text outline-0 px-3 py-2 rounded-md bg-gray-50 text-sm w-full" />
-            <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
-              <option>Filtrer par statut</option>
-            </select>
-            <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
-              <option>Filtrer par catégorie</option>
-            </select>
-            <select className="px-3 py-2 rounded-md border-[0.2px] border-gray-400 cursor-pointer outline-0 bg-gray-50 text-sm w-full">
-              <option>Filtrer par tag</option>
-            </select>
-            <Link href="/note-editor?action=new_note" className="bg-blue-900 cursor-pointer text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 w-full md:w-auto">
-              <FiEdit className="w-5 h-5" />
-              Nouvelle Note
-            </Link>
-          </div>
-
-          <NotesCards />
-        </section>
-
+        <NotesList />
+        
         {/* Aperçu des pièces jointes récentes */}
         {/* <section>
           <h2 className="text-2xl font-bold mb-6">Aperçu des pièces jointes récentes</h2>
