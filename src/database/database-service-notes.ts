@@ -263,3 +263,39 @@ export async function getSummaryData(): Promise<SummaryDataType | null> {
     return null;
   }
 }
+
+/**
+ * rechercher les notes dont le nom contient le parametre 
+ * @param nom - Le terme de recherche pour le nom de la note
+ * @returns Promise resolving to an array of notes or error.
+ */
+export async function searchNotes(nom: string) {
+  try {
+    // Recherche insensible à la casse avec ilike
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .neq('status', 'deleted')
+      .ilike('nom_note', `%${nom}%`)
+      .order('date_modification', { ascending: false })
+      .limit(20); // Limiter les résultats pour des performances optimales
+
+    if (error) {
+      console.error("searchNotes error:", error);
+      throw error;
+    }
+
+    // Déchiffrer le contenu des notes et mapper vers NoteDto
+    return (data ?? []).map((note: any) => {
+      const noteData = { ...note };
+      if (!!noteData.contenu_note) {
+        noteData.contenu_note = decrypt(note.contenu_note);
+      }
+      return new NoteDto(noteData);
+    });
+
+  } catch (error) {
+    console.error("Error in searchNotes:", error);
+    return [];
+  }
+}

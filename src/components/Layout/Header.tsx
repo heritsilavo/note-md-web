@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FiSettings, FiBell, FiUser, FiMenu, FiX } from "react-icons/fi";
 import { MdDashboard } from "react-icons/md";
+import SearchNotes from "../SearchNotes/SearchNotes";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function Header() {
         <Link href="/historique" className="font-medium text-gray-700 hover:text-blue-600">Historique</Link>
       </nav>
       <div className="hidden md:flex items-center gap-4">
-        <input type="text" placeholder="Rechercher des notes..." className="px-3 py-1.5 rounded-md border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200" />
+        <SearchNotes />
         <button className="p-2 rounded-full hover:bg-gray-100"><FiBell className="text-xl text-gray-500" /></button>
         <button className="p-2 rounded-full hover:bg-gray-100"><FiSettings className="text-xl text-gray-500" /></button>
         <button className="p-2 rounded-full hover:bg-gray-100"><FiUser className="text-xl text-gray-500" /></button>
