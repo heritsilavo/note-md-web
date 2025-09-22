@@ -146,7 +146,7 @@ export default function HeroSection() {
         <h1 className="text-4xl font-bold mb-4">Organisez vos pensées, synchronisez sans effort.</h1>
         <p className="text-gray-700 mb-6"> <span className='font-bold'>NotesMD</span> est votre solution complète pour une gestion de notes Markdown sans accroc, avec synchronisation en temps réel et organisation intelligente.</p>
         <p className="text-gray-700 mb-6">Içi, vous utiliserer la base de données de <span className='font-bold'>test</span>(commune à toutes les visiteurs). Contactez moi si vous vouler l'utiliser(<span className='font-bold'>votre propre base de données😉</span>) </p>
-        <Link href="https://drive.google.com/file/d/1n7TbX-Ifffw1HRJ_nb_31eTAbF_ANlVq/view?usp=sharing" target='_blank' className="cursor-pointer bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors">
+        <Link href="https://github.com/heritsilavo/notes-md/releases/latest/download/app-prod-release.apk" target='_blank' className="cursor-pointer bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors">
           Télécharger l'application mobile ici
         </Link>
       </div>
