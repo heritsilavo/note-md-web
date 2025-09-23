@@ -168,7 +168,7 @@ export default function useNote({ action, noteSupabaseId, parentId }: UseNotePro
             });
 
             console.log("Updating note:", updatedNote);
-            router.push(`/note-viewer/${initialNote.supabase_id}`);
+            router.push(`/note-preview/${initialNote.supabase_id}`);
             toast.success("Note modifiée avec succès !");
         } catch (error) {
             if (!(error instanceof CustomError)) {

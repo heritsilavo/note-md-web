@@ -105,25 +105,93 @@ export async function updateNote(id: string, updates: Partial<NoteDto>) {
 }
 
 /**
- * Delete a note by ID.
- * @param id - The ID of the note to delete.
- * @returns Promise resolving to the deleted note or error.
- */
-export async function deleteNote(id: string) {
-  const { data, error } = await supabase.from('notes').delete().eq('supabase_id', id).select();
-  if (error) throw error;
-  return data?.[0] ? new NoteDto(data[0]) : null;
-}
-
-/**
  * soft delete a note by ID.
  * @param id - The ID of the note to delete.
  * @returns Promise resolving to the deleted note or error.
  */
 export async function softDeleteNote(id: string) {
-  const { data, error } = await supabase.from('notes').update({ status: 'deleted' }).eq('supabase_id', id).select();
-  if (error) throw error;
-  return data?.[0] ? new NoteDto(data[0]) : null;
+  try {
+    // 1. Récupérer la note à supprimer
+    const noteToDelete = await getNoteById(id);
+    if (!noteToDelete) throw new Error("Note introuvable");
+
+    // 2. Supprimer les relations parent-enfant
+    // Pour chaque parent, retirer cette note de leurs enfants
+    for (const parentId of noteToDelete.parents) {
+      const parentNote = await getNoteById(parentId);
+      if (parentNote) {
+        parentNote.enfants = parentNote.enfants.filter(childId => childId !== id);
+        await updateNote(parentId, { enfants: parentNote.enfants });
+      }
+    }
+
+    // Pour chaque enfant, retirer cette note de leurs parents
+    for (const enfantId of noteToDelete.enfants) {
+      const enfantNote = await getNoteById(enfantId);
+      if (enfantNote) {
+        enfantNote.parents = enfantNote.parents.filter(parentId => parentId !== id);
+        await updateNote(enfantId, { parents: enfantNote.parents });
+      }
+    }
+
+    // 3. Effectuer la suppression soft
+    const { data, error } = await supabase
+      .from('notes')
+      .update({ status: 'deleted' })
+      .eq('supabase_id', id)
+      .select();
+    
+    if (error) throw error;
+    return data?.[0] ? new NoteDto(data[0]) : null;
+  } catch (error) {
+    console.error("Error in softDeleteNote:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a note by ID.
+ * @param id - The ID of the note to delete.
+ * @returns Promise resolving to the deleted note or error.
+ */
+export async function deleteNote(id: string) {
+  try {
+    // 1. Récupérer la note à supprimer
+    const noteToDelete = await getNoteById(id);
+    if (!noteToDelete) throw new Error("Note introuvable");
+
+    // 2. Supprimer les relations parent-enfant
+    // Pour chaque parent, retirer cette note de leurs enfants
+    for (const parentId of noteToDelete.parents) {
+      const parentNote = await getNoteById(parentId);
+      if (parentNote) {
+        parentNote.enfants = parentNote.enfants.filter(childId => childId !== id);
+        await updateNote(parentId, { enfants: parentNote.enfants });
+      }
+    }
+
+    // Pour chaque enfant, retirer cette note de leurs parents
+    for (const enfantId of noteToDelete.enfants) {
+      const enfantNote = await getNoteById(enfantId);
+      if (enfantNote) {
+        enfantNote.parents = enfantNote.parents.filter(parentId => parentId !== id);
+        await updateNote(enfantId, { parents: enfantNote.parents });
+      }
+    }
+
+    // 3. Effectuer la suppression définitive
+    const { data, error } = await supabase
+      .from('notes')
+      .delete()
+      .eq('supabase_id', id)
+      .select();
+    
+    if (error) throw error;
+    return data?.[0] ? new NoteDto(data[0]) : null;
+  } catch (error) {
+    console.error("Error in deleteNote:", error);
+    throw error;
+  }
 }
 
 /**
