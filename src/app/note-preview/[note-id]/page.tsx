@@ -25,7 +25,10 @@ export default function Page() {
     const searchParams = useSearchParams();
     const action:ActionType  = searchParams.get("action") as ActionType || null;
     const noteHistData: NoteDto | null = JSON.parse(searchParams.get("note_data") || "null");
- 
+    if (noteHistData?.contenu_note) {
+        noteHistData.contenu_note = decrypt(noteHistData.contenu_note);
+    }
+    
     const noteId = useParams()["note-id"] as string | undefined;
 
     const [isLoading, setIsLoading] = useState(false);
